@@ -37,8 +37,12 @@ public class Calculations implements Expenser{
 	}
 	//	As a user I would like to view my current balance in a different currency 
 	//Bonus : try to use the same convert function to convert from foreign currency to USD 
-	public Currency convertForeignCurrency(Currency C, double amount) {
-		return null; //temporary line to fix error. 
+	public double convertForeignCurrency(Currency C, double amount) {
+		double returnAmount = 0;
+		
+		returnAmount = C.rate * amount;
+		
+		return returnAmount; 
 	}
 	//	As a user I would like to load multiple expenses from an external file all at once returning true if loaded successfully and false otherwise 
 	public boolean loadExpenseFile(String filePath) {
