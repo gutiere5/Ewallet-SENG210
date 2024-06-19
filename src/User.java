@@ -12,7 +12,8 @@ public class User {
 	double monthlysavings;	
 	//should add constructor(s)
 	User(String username,String password){
-		
+		this.username = username;
+		this.pwd = password;
 	}
 	
 	public void addExpenseList(Expense Ex) {
