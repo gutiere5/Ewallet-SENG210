@@ -19,56 +19,66 @@ public class EWalletApp {
 		System.out.println("'AddE' for adding expenses.");
 		System.out.println("'AddI' for adding monthly income.");
 		System.out.println("'Convert' for converting to foriegn currency.");
+		System.out.println("'Exit' to close application.");
 		
 		
 		
 		Scanner scnr = new Scanner(System.in);
-		String menuChoice = scnr.next();
+		String menuChoice;
 		
-		if (menuChoice.contentEquals("AddE")) {
-			System.out.println("Expense Source: ");
-			String source = scnr.next();
+		while(true) {
+			System.out.println("Enter Command: ");
+			menuChoice = scnr.next();
 			
-			System.out.println("Amount: ");
-			double amount = scnr.nextDouble();
-			
-			System.out.println("Frequency (Per Year): ");
-			int freq = scnr.nextInt();
-			
-			Expense newExpense = new Expense(source, amount, freq);
-			
-			calc.addExpense(newExpense);
-		}
-		else if (menuChoice.contentEquals("AddI")) {
-			System.out.println("Income Source: ");
-			String source = scnr.next();
-			
-			System.out.println("Amount: ");
-			double amount = scnr.nextDouble();
-			
-			System.out.println("Month: ");
-			String month = scnr.next();
-			
-			Wage newWage = new Wage(source, amount, month);
-			
-			calc.addMonthlyIncome(newWage);
-		}
-		else if (menuChoice.contentEquals("Convert")) {
-			System.out.println("Currency: ");
-			String name = scnr.next();
-			
-			System.out.println("Amount: ");
-			double amount = scnr.nextDouble();
-			
-			Currency currency = calc.findCurrencyByName(name);
-			
-			if(currency == null) {
-				System.out.println("There is no currency called " + name);
+			if (menuChoice.contentEquals("AddE")) {
+				System.out.println("Expense Source: ");
+				String source = scnr.next();
+				
+				System.out.println("Amount: ");
+				double amount = scnr.nextDouble();
+				
+				System.out.println("Frequency (Per Year): ");
+				int freq = scnr.nextInt();
+				
+				Expense newExpense = new Expense(source, amount, freq);
+				
+				calc.addExpense(newExpense);
 			}
-			else {
-				System.out.println("Amount in " + name + ": " + calc.convertForeignCurrency(currency, amount));
+			else if (menuChoice.contentEquals("AddI")) {
+				System.out.println("Income Source: ");
+				String source = scnr.next();
+				
+				System.out.println("Amount: ");
+				double amount = scnr.nextDouble();
+				
+				System.out.println("Month: ");
+				String month = scnr.next();
+				
+				Wage newWage = new Wage(source, amount, month);
+				
+				calc.addMonthlyIncome(newWage);
+			}
+			else if (menuChoice.contentEquals("Convert")) {
+				System.out.println("Currency: ");
+				String name = scnr.next();
+				
+				System.out.println("Amount: ");
+				double amount = scnr.nextDouble();
+				
+				Currency currency = calc.findCurrencyByName(name);
+				
+				if(currency == null) {
+					System.out.println("There is no currency called " + name);
+				}
+				else {
+					System.out.println("Amount in " + name + ": " + calc.convertForeignCurrency(currency, amount));
+				}
+			}
+			else if (menuChoice.contentEquals("Exit")) {
+				break;
 			}
 		}
+		
 		
 		scnr.close();
 	}
