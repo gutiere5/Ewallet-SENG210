@@ -1,3 +1,5 @@
+import java.util.Scanner;
+
 public class Calculations implements Expenser{
 	private User userAtHand;
     private double totalIncome; // For testing purposes - Elber 
@@ -35,11 +37,31 @@ public class Calculations implements Expenser{
 	}
 	//As  a user I would like to view a detailed report of all income, and summary information for income
 	public void PrintIncomereport() {
-		
+		System.out.println("Income Report:"); 
+		for (Wage wage: userAtHand.getIncome()) {
+			System.out.println("Source: " + wage.source);
+			System.out.println("Amount: " + wage.amount);
+			System.out.println("Month: " + wage.Month);
+			System.out.println("----------------------");
+		}
 	}
 	//As  a user I would like to view a detailed report of income of a certain type, and summary information for income
-	public void PrintIncomereportbyTpe() {
+	public void PrintIncomereportbyTpe(){
+		Scanner scnr = new Scanner(System.in);
 		
+		System.out.println("Enter Type: ");
+		String type = scnr.next();
+		
+		System.out.println("Income Report By Type " + type +": "); 
+		
+		for (Wage wage: userAtHand.getIncome()) {
+			if (wage.source.equals(type)) {
+				System.out.println("Source: " + wage.source);
+				System.out.println("Amount: " + wage.amount);
+				System.out.println("Month: " + wage.Month);
+				System.out.println("----------------------");
+			}
+		}
 	}
 	//As  a user I would like to view a detailed report of expense of a certain type , and summary information for expenses
 	public void PrintExpensebyType() {
@@ -96,5 +118,5 @@ public class Calculations implements Expenser{
 		this.totalSavings = this.totalIncome - this.totalExpenses;
 		
 	}
-		
+
 }

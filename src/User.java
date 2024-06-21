@@ -32,4 +32,8 @@ public class User {
 		return currencyRates;
 	}
 	
+	// Elber - Added this Method, not sure if professor with adding more methods here
+	public ArrayList<Wage> getIncome() {
+		return Income;
+	}
 }

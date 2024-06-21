@@ -19,6 +19,8 @@ public class EWalletApp {
 		System.out.println("'AddE' for adding expenses.");
 		System.out.println("'AddI' for adding monthly income.");
 		System.out.println("'Convert' for converting to foriegn currency.");
+		System.out.println("'ReportI' for Income Report");
+		System.out.println("'ReportIType' for Income Report by Type");
 		System.out.println("'Exit' to close application.");
 		
 		
@@ -74,6 +76,15 @@ public class EWalletApp {
 					System.out.println("Amount in " + name + ": " + calc.convertForeignCurrency(currency, amount));
 				}
 			}
+			else if (menuChoice.contentEquals("ReportI")) {
+					
+				calc.PrintIncomereport();
+			}
+			else if (menuChoice.contentEquals("ReportIType")) {
+						
+				calc.PrintIncomereportbyTpe();
+			}
+	
 			else if (menuChoice.contentEquals("Exit")) {
 				break;
 			}
