@@ -32,4 +32,12 @@ public class User {
 		return currencyRates;
 	}
 	
+	public ArrayList<Wage> getIncome() {
+		return Income;
+	}
+	
+	public ArrayList<Expense> getSpending() {
+		return Spending;
+	}
+	
 }

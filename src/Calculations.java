@@ -1,8 +1,15 @@
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
 public class Calculations implements Expenser{
 	private User userAtHand;
     private double totalIncome; // For testing purposes - Elber 
     private double totalExpenses; // For testing purposes - Elber 
     public double totalSavings; // For testing purposes - Elber 
+    public String kindOfReport; // used to determine which type of report is printed by exportReport(). 
+    public String reportType; // used to determine which which income or expense entries are used in filtered reports. 
+    public String filePath; //the filepath where new files are created. 
 	
 	// Elber - created this constructor 
 	public Calculations(User user) {
@@ -45,9 +52,63 @@ public class Calculations implements Expenser{
 	public void PrintExpensebyType() {
 		
 	}
+	
 	// As a user I would like to choose a report and export it as an external file (any type is fine preferences are csv or JSON)
 	public void exportReport(String reportTitle) {
+		//stores the path and name of the file to be created.
+		String fullFilepath = filePath + reportTitle + ".csv";
 		
+		//create the file in the destination. 
+		File file = new File(fullFilepath);
+		try {
+			if(file.createNewFile() == false) {
+				System.out.println("File " + reportTitle + ".csv has been overwritten. "); 
+			}
+		}
+		catch(IOException e) {
+			System.out.println(e.toString());
+			return;
+		}
+		
+		//write the data to file.
+		try {
+			FileWriter writer = new FileWriter(file);
+			
+			if(kindOfReport.equals("Income")) {
+				writer.write("source,amount,month\n");
+				for(Wage income : userAtHand.getIncome()) {
+					writer.write(income.source + "," + income.amount + "," + income.Month + "\n");
+				}
+			}
+			else if(kindOfReport.equals("IncomeByType")) {
+				writer.write("source,amount,month\n");
+				for(Wage income : userAtHand.getIncome()) {
+					if(income.source.equals(reportType)) {
+						writer.write(income.source + "," + income.amount + "," + income.Month + "\n");
+					}
+				}
+			}
+			else if(kindOfReport.equals("Expense")) {
+				writer.write("source,amount,yearly_frequency\n");
+				for(Expense spending : userAtHand.getSpending()) {
+					writer.write(spending.source + "," + spending.amount + "," + spending.yearlyfrequency + "\n");
+				}
+			}
+			else if(kindOfReport.equals("ExpenseByType")) {
+				writer.write("source,amount,yearly_frequency\n");
+				for(Expense spending : userAtHand.getSpending()) {
+					if(spending.source.equals(reportType)) {
+						writer.write(spending.source + "," + spending.amount + "," + spending.yearlyfrequency + "\n");
+					}
+				}
+			}
+			
+			writer.close();
+		}
+		catch(IOException e) {
+			System.out.println(e.toString());
+			return;
+		}
 	}
 	//	As a user I would like to view my current balance in a different currency 
 	//Bonus : try to use the same convert function to convert from foreign currency to USD 
