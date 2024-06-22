@@ -1,28 +1,26 @@
 import java.util.Scanner;
 
+import javax.swing.DefaultListModel;
+
 public class Calculations implements Expenser{
 	public User userAtHand;
-    private double totalIncome; // For testing purposes - Elber 
-    private double totalExpenses; // For testing purposes - Elber 
-    public double totalSavings; // For testing purposes - Elber 
-	
-	// Elber - created this constructor 
-	public Calculations(User user) {
-		this.userAtHand = user;
-		this.totalSavings = 0.0;
-		
-	}
-	
+         
+    // Initialize user 
+    public Calculations(User user) {
+    	this.userAtHand = user;
+    }
+    
+    // Generates ReportListModel List for JList GUI use 
+ 	DefaultListModel<String> reportListModel = new DefaultListModel<>();;
+    
 	// As a user I'd like to add a monthly expense so I can track and report my expenses - 3pts
 	public void addExpense (Expense Ex) {
 		userAtHand.addExpenseList(Ex);
-		System.out.println("Expense added: Source - " + Ex.source + "; Amount - " + Ex.amount + "; Frequency per year - " + Ex.yearlyfrequency);
 		updateMonthlySavings();		// Updates Monthly Saving when Expense is added
 	}
 	// As a user I'd like to add a monthly income so I can track and report my income all year - 3pts
 	public void addMonthlyIncome (Wage W) {
 		userAtHand.addIncomeList(W);
-		System.out.println("Income added: Source - " + W.source + "; Amount - " + W.amount + "; Month - " + W.Month);
 		updateMonthlySavings();	// Updates Monthly Savings when Monthly Income is added
 	}
 	//As  a user I would like to view a detailed report of all expenses, income, and summary information 
@@ -37,32 +35,36 @@ public class Calculations implements Expenser{
 	}
 	//As  a user I would like to view a detailed report of all income, and summary information for income
 	public void PrintIncomereport() {
-		System.out.println("Income Report:"); 
+		String incomeInfo; 		// Used to store Source, amount, Month
+
+		// Clears Current List information and prints updates
+		reportListModel.clear();
+		
+		// Gets information for Report Income
 		for (Wage wage: userAtHand.getIncome()) {
-			System.out.println("Source: " + wage.source);
-			System.out.println("Amount: " + wage.amount);
-			System.out.println("Month: " + wage.Month);
-			System.out.println("----------------------");
+			incomeInfo = "Source: " + wage.source + "    Amount: " + wage.amount + "    Month: " + wage.Month;
+			reportListModel .addElement(incomeInfo);
 		}
 	}
+	
 	//As  a user I would like to view a detailed report of income of a certain type, and summary information for income
 	public void PrintIncomereportbyTpe(){
-		Scanner scnr = new Scanner(System.in);
+		String incomeInfo; 		// Used to store Source, amount, Month
+		String type; 			// User input from filter text field
+
+		reportListModel.clear();
 		
-		System.out.println("Enter Type: ");
-		String type = scnr.next();
+		type = MainGUI.filterField.getText();
 		
-		System.out.println("Income Report By Type " + type +": "); 
-		
+		// Gets filtered information for Report Income
 		for (Wage wage: userAtHand.getIncome()) {
 			if (wage.source.equals(type)) {
-				System.out.println("Source: " + wage.source);
-				System.out.println("Amount: " + wage.amount);
-				System.out.println("Month: " + wage.Month);
-				System.out.println("----------------------");
+				incomeInfo = "Source: " + wage.source + "    Amount: " + wage.amount + "    Month: " + wage.Month;
+				reportListModel .addElement(incomeInfo);
 			}
-		}
+		}		
 	}
+	
 	//As  a user I would like to view a detailed report of expense of a certain type , and summary information for expenses
 	public void PrintExpensebyType() {
 		
@@ -115,7 +117,11 @@ public class Calculations implements Expenser{
 	// Elber
 	// updates monthly savings based on latest added income and expenses. This is an internal function not called by the users.  Bonus: what is the most efficient way to call it (when?)? 
 	public void updateMonthlySavings() {
-		this.totalSavings = this.totalIncome - this.totalExpenses;
+		
+		userAtHand.monthlysavings = 
+		
+		
+		
 		
 	}
 
