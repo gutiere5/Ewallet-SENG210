@@ -1,7 +1,7 @@
 import java.util.Scanner;
 
 public class Calculations implements Expenser{
-	private User userAtHand;
+	public User userAtHand;
     private double totalIncome; // For testing purposes - Elber 
     private double totalExpenses; // For testing purposes - Elber 
     public double totalSavings; // For testing purposes - Elber 

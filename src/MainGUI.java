@@ -13,9 +13,11 @@ import java.awt.event.ActionListener;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -27,7 +29,10 @@ public class MainGUI extends JFrame{
 	
 	// Initialize JPanel cards as a field
 	JPanel cards;
-
+	
+	// IncomeReportListModel List for JList 
+	DefaultListModel<String> reportListModel = new DefaultListModel<>();;
+	
 	// JTextFields
 	JTextField usernameField = new JTextField();		// Used in loginWindow()
 	JTextField passwordField = new JTextField();		// Used in loginWindow()
@@ -48,18 +53,14 @@ public class MainGUI extends JFrame{
 	JButton printExpenseButtonType = new JButton("Expense Report By Type");	// Used in mainPanel()
 	JButton printFullReportButton = new JButton("Print Full Report");		// Used in mainPanel()
 	JButton covertForeiCurrcyButton = new JButton("Convert Foreign Currency");	// Used in mainPanel()
+	JButton returnButton = new JButton("Return To Main Menu"); 
 
 	// JLabels
 	JLabel statusLabel = new JLabel();		// Used in loginWindow() and to show who is logged in
-	
-	//TODO Testing
-	JLabel currentIncome = new JLabel();	
-	JLabel currentExpense = new JLabel();	
-	JLabel currentSavings = new JLabel();	
-	
-	
-	
-
+	JLabel reportTitle = new JLabel();		// Used in reportWindow() and actionPerformed()
+	JLabel reportLabel1 = new JLabel();		// Used in reportWindow() and actionPerformed()
+	JLabel reportLabel2 = new JLabel();		// Used in reportWindow() and actionPerformed()
+	JLabel reportLabel3 = new JLabel();		// Used in reportWindow() and actionPerformed()
 	/**
 	 * Constructor for MainGUI
 	 */
@@ -79,6 +80,7 @@ public class MainGUI extends JFrame{
 		cards = new JPanel(new CardLayout());
 		//TODO Testing    cards.add(loginWindow(), "LoginPanel");
 		cards.add(mainPanel(), "MainPanel");
+		cards.add(reportWindow(), "ReportPanel");
 
 		add(cards);
 	}
@@ -95,14 +97,9 @@ public class MainGUI extends JFrame{
 		gbc.insets = new Insets(5, 5, 5, 5); // Padding
 
 		// Create a sub panel with BoxLayout for the report buttons
-		JPanel reportPanel = new JPanel();
-		reportPanel.setLayout(new BoxLayout(reportPanel, BoxLayout.Y_AXIS));
-		reportPanel.setAlignmentX(Component.RIGHT_ALIGNMENT);
-		
-		//TODO Create a sub panel for testing income and expenses
-		JPanel testingPanel = new JPanel();
-		reportPanel.setLayout(new BoxLayout(reportPanel, BoxLayout.Y_AXIS));
-
+		JPanel actionPanel = new JPanel();
+		actionPanel.setLayout(new BoxLayout(actionPanel, BoxLayout.Y_AXIS));
+		actionPanel.setAlignmentX(Component.RIGHT_ALIGNMENT);
 
 		// JLabels
 		JLabel sourceIncomeLabel = new JLabel("Source:");
@@ -179,32 +176,23 @@ public class MainGUI extends JFrame{
 		
 		//////////////
 		// Add buttons to reportLabel panel
-		reportPanel.add(actionsLabel);
-		reportPanel.add(Box.createVerticalStrut(5)); // Add space between label and buttons
-		reportPanel.add(printIncomeButton);
-		reportPanel.add(Box.createVerticalStrut(5)); // Add space between buttons
-		reportPanel.add(printExpenseButton);
-		reportPanel.add(Box.createVerticalStrut(5)); // Add space between buttons
-		reportPanel.add(printIncomeButtonType);
-		reportPanel.add(Box.createVerticalStrut(5)); // Add space between buttons
-		reportPanel.add(printExpenseButtonType);
-		reportPanel.add(Box.createVerticalStrut(5)); // Add space between buttons
-		reportPanel.add(printFullReportButton);
-		reportPanel.add(Box.createVerticalStrut(5)); // Add space between buttons
-		reportPanel.add(covertForeiCurrcyButton);
-
-
-		//////////////
-		// Add labels to testingPanel panel
-		testingPanel.add(currentIncome);
-		testingPanel.add(currentExpense);
-		testingPanel.add(currentSavings);
+		actionPanel.add(actionsLabel);
+		actionPanel.add(Box.createVerticalStrut(5)); // Add space between label and buttons
+		actionPanel.add(printIncomeButton);
+		actionPanel.add(Box.createVerticalStrut(5)); // Add space between buttons
+		actionPanel.add(printExpenseButton);
+		actionPanel.add(Box.createVerticalStrut(5)); // Add space between buttons
+		actionPanel.add(printIncomeButtonType);
+		actionPanel.add(Box.createVerticalStrut(5)); // Add space between buttons
+		actionPanel.add(printExpenseButtonType);
+		actionPanel.add(Box.createVerticalStrut(5)); // Add space between buttons
+		actionPanel.add(printFullReportButton);
+		actionPanel.add(Box.createVerticalStrut(5)); // Add space between buttons
+		actionPanel.add(covertForeiCurrcyButton);
 		
 		// Add the sub-panel to the center of the main panel
 		mainPanel.add(centerPanel, BorderLayout.CENTER);
-		mainPanel.add(reportPanel, BorderLayout.EAST);
-		mainPanel.add(testingPanel, BorderLayout.WEST);
-
+		mainPanel.add(actionPanel, BorderLayout.EAST);
 
 		return mainPanel;
 	}
@@ -237,8 +225,28 @@ public class MainGUI extends JFrame{
 
 		return loginPanel;
 	}
+	
+	public JPanel reportWindow() {
+		// Panel for reportPanel
+		JPanel reportPanel = new JPanel();
+		reportPanel.setLayout(new BoxLayout(reportPanel, BoxLayout.Y_AXIS));
+		reportPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+		
+		// JList for Reports Information
+		JList<String> reportList = new JList<>(reportListModel);
+
+		reportPanel.add(reportTitle);
+		reportPanel.add(reportList);
+		reportPanel.add(returnButton);
+		
+		//	TODO need to find a way to return to the Main Panel 
+
+		return reportPanel;
+	}
 
 	public void actionPerformed() {
+		
+		
 		// Action for the LoginButton
 		loginButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -273,16 +281,13 @@ public class MainGUI extends JFrame{
 			public void actionPerformed(ActionEvent arg0) {
 				// Handle add expense action here
 				String source = sourceExpenseField.getText();
-				double amount =  Double.parseDouble(amountExpenseField.getText());
+				double amount = Double.parseDouble(amountExpenseField.getText());
 				int freq = Integer.parseInt(yearlyFreqField.getText());
-				
 				
 				// Adding Expense
 				Expense newExpense = new Expense(source, amount, freq);
-				
-				calc.addExpense(newExpense);
-				
-				
+
+				calc.addExpense(newExpense);					
 			}
 		});
 
@@ -290,15 +295,64 @@ public class MainGUI extends JFrame{
 		addIncomeButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				// Handle add income action here
-				System.out.println("Add Monthly Income button clicked");
+				String source = sourceIncomeField.getText();
+				double amount = Double.parseDouble(amountIncomeField.getText());
+				String month = monthField.getText();
+
+				Wage newWage = new Wage(source, amount, month);
+
+				calc.addMonthlyIncome(newWage);
 			}
 		});
 
 		//TODO print income report Button Action
 		printIncomeButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				// Handle add income action here
-				System.out.println("Print Income Report button clicked");
+				CardLayout cardLayout = (CardLayout)(cards.getLayout());
+				String incomeInfo; 		// Used to store Source, amount, Month
+				reportTitle.setText("Income Report");
+
+				// Clears Current List information and prints updates
+				reportListModel.clear();
+				
+				// Gets information for Report Income
+				for (Wage wage: calc.userAtHand.getIncome()) {
+					incomeInfo = "Source: " + wage.source + "    Amount: " + wage.amount + "    Month: " + wage.Month;
+					reportListModel .addElement(incomeInfo);
+				}
+				
+				// Switches to the Report Panel 
+				cardLayout.show(cards, "ReportPanel");
+			}
+		});
+		
+		//TODO print income by type report Button Action ( STILL NEEDS A LOT OF WORK)
+		printIncomeButtonType.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				CardLayout cardLayout = (CardLayout)(cards.getLayout());
+				String incomeInfo; 		// Used to store Source, amount, Month
+				reportTitle.setText("Income Report By Type");
+
+				// Clears Current List information and prints updates
+				reportListModel.clear();
+				
+				// Gets information for Report Income
+				for (Wage wage: calc.userAtHand.getIncome()) {
+					incomeInfo = "Source: " + wage.source + "    Amount: " + wage.amount + "    Month: " + wage.Month;
+					reportListModel .addElement(incomeInfo);
+				}
+				
+				// Switches to the Report Panel 
+				cardLayout.show(cards, "ReportPanel");
+			}
+		});
+		
+		returnButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				CardLayout cardLayout = (CardLayout)(cards.getLayout());
+			
+				// Switches to the Main Panel 
+				cardLayout.show(cards, "MainPanel");
 			}
 		});
 
@@ -311,6 +365,7 @@ public class MainGUI extends JFrame{
 		});
 	}
 	
+	//TODO Lost track on this one
 	public void updateInfo() {
 		//currentIncome = ;	
 		//currentExpense = ;	
