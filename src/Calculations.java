@@ -1,6 +1,6 @@
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.util.ArrayList;
+
 
 public class Calculations implements Expenser{
 	private User userAtHand;
@@ -53,6 +53,11 @@ public class Calculations implements Expenser{
 		
 	}
 	
+	//used to display an error message if problems occur during read/write operations. 
+	public void IOError(String error) {
+		System.out.println("IO Error: " + error);
+	}
+	
 	// As a user I would like to choose a report and export it as an external file (any type is fine preferences are csv or JSON)
 	public void exportReport(String reportTitle) {
 		//stores the path and name of the file to be created.
@@ -66,7 +71,7 @@ public class Calculations implements Expenser{
 			}
 		}
 		catch(IOException e) {
-			System.out.println(e.toString());
+			IOError(e.toString());
 			return;
 		}
 		
@@ -106,7 +111,7 @@ public class Calculations implements Expenser{
 			writer.close();
 		}
 		catch(IOException e) {
-			System.out.println(e.toString());
+			IOError(e.toString());
 			return;
 		}
 	}
@@ -139,12 +144,144 @@ public class Calculations implements Expenser{
 	}
 	
 	//	As a user I would like to load multiple expenses from an external file all at once returning true if loaded successfully and false otherwise 
-	public boolean loadExpenseFile(String filePath) {
-		return false; //temporary line to fix error. 
+	public boolean loadIncomeFile(String filePath) {
+		File loadedFile = null;
+		try {
+			loadedFile = new File(filePath);
+		}
+		catch(Exception E) {
+			IOError("file not found. ");
+		}
+		
+		try {
+			ArrayList<Wage> incomes = new ArrayList<Wage>(); //data read from the file will be stored here and added to userAtHand if no problems occur. 
+			
+			BufferedReader br = new BufferedReader(new FileReader(loadedFile));
+			String line = "";
+			String source;
+			double amount;
+			String month;
+			int lineNumber = 1; //used to keep track of which line is being read. 
+			
+			br.readLine(); //first line contains data field names and should be skipped. 
+			
+			while ((line = br.readLine()) != null) {   //go through each line in the file
+				lineNumber++;
+				
+				//if a line is completely empty, ignore it.
+				if(line.equals("")) {
+					continue;
+				}
+				
+				String[] splitLine = line.split(",");   // use comma as separator to split the line into parts.
+				
+				if(splitLine.length < 3) {
+					IOError("invalid data on line " + lineNumber + ", 3 data points are required for each line. ");
+					return false;
+				}
+				
+				//first data point is source. 
+				source = splitLine[0];
+				
+				//second data point is amount, must be parse-able as double. 
+				try {
+					amount = Double.parseDouble(splitLine[1]);
+				}
+				catch(Exception E) {
+					IOError("invalid data on line " + lineNumber + ", second data point must be a number. ");
+					return false;
+				}
+				
+				//third data point is month. 
+				month = splitLine[2];
+				
+				//if all three data points work, add a new expense.
+				incomes.add(new Wage(source, amount, month));
+			}
+			
+			//if no problems occurred while reading the data, add everything from expenses to the userAtHand's Spending list. 
+			for(Wage inc : incomes) {
+				userAtHand.addIncomeList(inc);
+			}
+			return true;
+		}
+		catch(Exception E){
+			IOError(E.toString());
+			return false;
+		}
 	}
 	//	As a user I would like to load multiple income from an external file all at once returning true if loaded successfully and false otherwise 
-	public boolean loadIncomeFile(String filePath) {
-		return false; //temporary line to fix error. 
+	public boolean loadExpenseFile(String filePath) {
+		File loadedFile = null;
+		try {
+			loadedFile = new File(filePath);
+		}
+		catch(Exception E) {
+			IOError("file not found. ");
+		}
+		
+		try {
+			ArrayList<Expense> expenses = new ArrayList<Expense>(); //data read from the file will be stored here and added to userAtHand if no problems occur. 
+			
+			BufferedReader br = new BufferedReader(new FileReader(loadedFile));
+			String line = "";
+			String source;
+			double amount;
+			int yearlyFrequency;
+			int lineNumber = 1; //used to keep track of which line is being read. 
+			
+			br.readLine(); //first line contains data field names and should be skipped. 
+			
+			while ((line = br.readLine()) != null) {   //go through each line in the file
+				lineNumber++;
+				
+				//if a line is completely empty, ignore it.
+				if(line.equals("")) {
+					continue;
+				}
+				
+				String[] splitLine = line.split(",");   // use comma as separator to split the line into parts.
+				
+				if(splitLine.length < 3) {
+					IOError("invalid data on line " + lineNumber + ", 3 data points are required for each line. ");
+					return false;
+				}
+				
+				//first data point is source. 
+				source = splitLine[0];
+				
+				//second data point is amount, must be parse-able as double. 
+				try {
+					amount = Double.parseDouble(splitLine[1]);
+				}
+				catch(Exception E) {
+					IOError("invalid data on line " + lineNumber + ", second data point must be a number. ");
+					return false;
+				}
+				
+				//third data point is yearly frequency, must be parse-able as int. 
+				try {
+					yearlyFrequency = Integer.parseInt(splitLine[2]);
+				}
+				catch(Exception E) {
+					IOError("invalid data on line " + lineNumber + ", third data point must be an integer. ");
+					return false;
+				}
+				
+				//if all three data points work, add a new expense.
+				expenses.add(new Expense(source, amount, yearlyFrequency));
+			}
+			
+			//if no problems occurred while reading the data, add everything from expenses to the userAtHand's Spending list. 
+			for(Expense exp : expenses) {
+				userAtHand.addExpenseList(exp);
+			}
+			return true;
+		}
+		catch(Exception E){
+			IOError(E.toString());
+			return false;
+		}
 	}
 	// As a user I would like to provide an item and a price and get an estimate in number of months needed to save up to buy this item. (based on current monthly saving. 
 	public int whenCanIBuy(String itemname,double  price) {

@@ -1,4 +1,4 @@
-import java.util.ArrayList;  
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class EWalletApp {
@@ -11,16 +11,7 @@ public class EWalletApp {
 		Calculations calc = new Calculations(new User("TestUser","TestPassword"));
 		
 		//for currency conversion testing
-		calc.addCurrency("TestCur", 2);
-		
-		//for export testing
-		calc.addMonthlyIncome(new Wage("job", 50, "june"));
-		calc.addMonthlyIncome(new Wage("job", 30, "may"));
-		calc.addMonthlyIncome(new Wage("gambling", 1000, "may"));
-		calc.addExpense(new Expense("eggs", 50, 4));
-		calc.addExpense(new Expense("eggs", 10, 1));
-		calc.addExpense(new Expense("rent", 100, 1));
-		
+		calc.addCurrency("TestCur", 2);		
 		
 		//console welcome
 		System.out.println("Welcome to your eWallet!");
@@ -29,6 +20,7 @@ public class EWalletApp {
 		System.out.println("'AddI' for adding monthly income.");
 		System.out.println("'Convert' for converting to foriegn currency.");
 		System.out.println("'Export' for exporting a report to file.");
+		System.out.println("'Load' for loading an income or expense file.");
 		System.out.println("'Exit' to close application.");
 		
 		
@@ -114,6 +106,27 @@ public class EWalletApp {
 				else {
 					System.out.println(calc.kindOfReport + " is not a valid kind of report");
 				}
+			}
+			else if (menuChoice.contentEquals("Load")) {
+				System.out.println("Income or Expense file?: ");
+				String loadType = scnr.next();
+				
+				if(loadType.equals("Expense")) {
+					System.out.println("Enter the full filepath, name, and extension of the file to load: ");
+					String loadFilepath = scnr.next();
+					
+					calc.loadExpenseFile(loadFilepath);
+				}
+				else if(loadType.equals("Income")) {
+					System.out.println("Enter the full filepath, name, and extension of the file to load: ");
+					String loadFilepath = scnr.next();
+					
+					calc.loadIncomeFile(loadFilepath);
+				}
+				else {
+					System.out.println("invalid load type. ");
+				}
+				
 			}
 			else if (menuChoice.contentEquals("Exit")) {
 				break;
