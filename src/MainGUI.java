@@ -22,6 +22,9 @@ import javax.swing.SwingConstants;
 
 public class MainGUI extends JFrame{
 
+	// Initializing Calculations Object
+	Calculations calc = new Calculations(new User("TestUser","TestPassword"));
+	
 	// Initialize JPanel cards as a field
 	JPanel cards;
 
@@ -118,7 +121,7 @@ public class MainGUI extends JFrame{
 		// Column 1
 		gbc.gridx = 0;
 		gbc.gridy = 0;
-		centerPanel.add(expensesLabel, gbc);
+		centerPanel.add(incomeLabel, gbc);
 		
 		gbc.gridy = 1;
 		centerPanel.add(sourceIncomeLabel, gbc);
@@ -142,13 +145,13 @@ public class MainGUI extends JFrame{
 		centerPanel.add(monthField, gbc);
 		
 		gbc.gridy = 4;
-		centerPanel.add(addExpenseButton, gbc);
+		centerPanel.add(addIncomeButton, gbc);
 		
 		// Column 3
 		gbc.ipadx = 0;
 		gbc.gridx = 2;
 		gbc.gridy = 0;
-		centerPanel.add(incomeLabel, gbc);
+		centerPanel.add(expensesLabel, gbc);
 		
 		gbc.gridy = 1;
 		centerPanel.add(sourceExpenseLabel, gbc);
@@ -172,7 +175,7 @@ public class MainGUI extends JFrame{
 		centerPanel.add(yearlyFreqField, gbc);
 		
 		gbc.gridy = 4;
-		centerPanel.add(addIncomeButton, gbc);
+		centerPanel.add(addExpenseButton, gbc);
 		
 		//////////////
 		// Add buttons to reportLabel panel
@@ -269,7 +272,17 @@ public class MainGUI extends JFrame{
 		addExpenseButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				// Handle add expense action here
-				System.out.println("Add Expense button clicked");
+				String source = sourceExpenseField.getText();
+				double amount =  Double.parseDouble(amountExpenseField.getText());
+				int freq = Integer.parseInt(yearlyFreqField.getText());
+				
+				
+				// Adding Expense
+				Expense newExpense = new Expense(source, amount, freq);
+				
+				calc.addExpense(newExpense);
+				
+				
 			}
 		});
 
