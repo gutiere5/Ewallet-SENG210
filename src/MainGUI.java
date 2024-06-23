@@ -10,7 +10,7 @@ public class MainGUI extends JFrame{
 
 	// Initialize JPanel cards as a field
 	JPanel cards;
-
+	
 	// JTextFields
 	JTextField usernameField = new JTextField();		// Used in loginWindow()
 	JTextField passwordField = new JTextField();		// Used in loginWindow()
@@ -26,19 +26,20 @@ public class MainGUI extends JFrame{
 	JButton loginButton = new JButton("Login");									// Used in loginWindow()
 	JButton addExpenseButton = new JButton("Add Expense");						// Used in mainPanel()
 	JButton addIncomeButton = new JButton("Add Income");						// Used in mainPanel()
-	JButton printIncomeButton = new JButton("Income Report");					// Used in mainPanel()
-	JButton printExpenseButton = new JButton("Expense Report");					// Used in mainPanel()
-	JButton printFullReportButton = new JButton("Print Full Report");			// Used in mainPanel()
+	JButton reportWindowButton = new JButton("Reports");						// Used IN mainPanel()
 	JButton covertForeiCurrcyButton = new JButton("Convert Foreign Currency");	// Used in mainPanel()
 	JButton returnButton = new JButton("Return To Main Menu"); 					// Used in reportPanel()
-	JButton filterButton = new JButton("Filter");			 					// Used in reportPanel();
+	JButton filterButton = new JButton("Filter");			 					// Used in reportPanel()
+	JButton printIncomeButton = new JButton("Income Report");					// Used in reportPanel()
+	JButton printExpenseButton = new JButton("Expense Report");					// Used in reportPanel()
+	JButton printFullReportButton = new JButton("Print Full Report");			// Used in reportPanel()
 
 	// JLabels
 	JLabel statusLabel = new JLabel();									// Used in loginWindow() and to show who is logged in
 	JLabel reportTitle = new JLabel("Report", SwingConstants.CENTER);	// Used in reportWindow() and actionPerformed()
-	JLabel filterLabel = new JLabel("Filter");							// Used in reportWindow()
-
-
+	JLabel currencyLabel = new JLabel("Currency: ");					// Used in MainPanel()
+	
+	
 	/**
 	 * Constructor for MainGUI
 	 */
@@ -46,12 +47,17 @@ public class MainGUI extends JFrame{
 		////////////////////////////
 		/// Frame Settings
 		//////////////////////////
+		setSize(300, 200);     // Sets the size of the Frame
 		setTitle("EWallet");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null); // Center the window
 
 		// Initialized actionPerformed()
 		actionPerformed();
+		
+		//TODO Initializes currency, for currency conversion testing
+		calc.addCurrency("TestCur", 2);
+		//currencyLabel.setText(getName(Ca));
 
 		// Create card panel with Card Layout
 		cards = new JPanel(new CardLayout());
@@ -63,7 +69,6 @@ public class MainGUI extends JFrame{
 	}
 
 	public JPanel mainPanel() {
-		setSize(700, 300);
 		// Create main panel with BorderLayout
 		JPanel mainPanel = new JPanel(new BorderLayout());
 
@@ -89,6 +94,8 @@ public class MainGUI extends JFrame{
 		actionsLabel.setFont(new Font("Arial", Font.PLAIN, 20));
 		JLabel expensesLabel = new JLabel("Expenses");
 		JLabel incomeLabel = new JLabel("Income");
+		JLabel savingsLabel = new JLabel();
+		savingsLabel.setText("Monthly Savings: " + Double.toString(calc.userAtHand.monthlysavings));
 
 		//////////////
 		// Adding labels and text fields to the mainPanel with GridBagLayout
@@ -153,16 +160,15 @@ public class MainGUI extends JFrame{
 		centerPanel.add(addExpenseButton, gbc);
 		//////////////
 
-		// Add buttons to reportLabel panel
+		// Add buttons to actions panel
 		actionPanel.add(actionsLabel);
 		actionPanel.add(Box.createVerticalStrut(5)); // Add space between label and buttons
-		actionPanel.add(printIncomeButton);
-		actionPanel.add(Box.createVerticalStrut(5)); // Add space between buttons
-		actionPanel.add(printExpenseButton);
-		actionPanel.add(Box.createVerticalStrut(5)); // Add space between buttons
-		actionPanel.add(printFullReportButton);
+		actionPanel.add(reportWindowButton);
 		actionPanel.add(Box.createVerticalStrut(5)); // Add space between buttons
 		actionPanel.add(covertForeiCurrcyButton);
+		actionPanel.add(Box.createVerticalStrut(10)); // Add space between buttons
+		actionPanel.add(currencyLabel);
+		actionPanel.add(savingsLabel);
 
 		// Add the sub-panel to the center of the main panel
 		mainPanel.add(centerPanel, BorderLayout.CENTER);
@@ -177,7 +183,6 @@ public class MainGUI extends JFrame{
 	 */
 	public JPanel loginWindow() {	        
 		// Panel for user login
-		setSize(350, 200);     // Sets the size of the Frame
 		// Initializes panel for the login view
 		JPanel loginPanel = new JPanel(new GridLayout(3,2));
 
@@ -213,20 +218,34 @@ public class MainGUI extends JFrame{
 		// Sub Panel for westReportPanel, using boxLayout
 		JPanel westReportPanel = new JPanel();
 		westReportPanel.setLayout(new BoxLayout(westReportPanel, BoxLayout.Y_AXIS));
+		
+		// Sub Panel for eastReportPanel, using boxLayout
+		JPanel eastReportPanel = new JPanel();
+		eastReportPanel.setLayout(new BoxLayout(eastReportPanel, BoxLayout.Y_AXIS));
 
 		// JList for Reports Information
 		JList<String> reportList = new JList<>(calc.reportListModel);
+		
+		// JLabels
+		JLabel filterLabel = new JLabel("Filter By Type");
 
+		
 		// Adding components to westReportPanel
 		westReportPanel.add(filterLabel);
 		westReportPanel.add(filterField);
 		westReportPanel.add(filterButton);
+		
+		// Adding components to eastReportPanel
+		eastReportPanel.add(printIncomeButton);
+		eastReportPanel.add(printExpenseButton);
+		eastReportPanel.add(printFullReportButton);
 
 		// Adding components to mainReportPanel
 		mainReportPanel.add(reportTitle, BorderLayout.NORTH);
 		mainReportPanel.add(reportList, BorderLayout.CENTER);
 		mainReportPanel.add(returnButton, BorderLayout.SOUTH);
 		mainReportPanel.add(westReportPanel, BorderLayout.WEST);
+		mainReportPanel.add(eastReportPanel, BorderLayout.EAST);
 
 		return mainReportPanel;
 	}
@@ -283,26 +302,41 @@ public class MainGUI extends JFrame{
 				calc.addMonthlyIncome(newWage);
 			}
 		});
-
-		printIncomeButton.addActionListener(new ActionListener() {
+		
+		reportWindowButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				CardLayout cardLayout = (CardLayout)(cards.getLayout());
-				reportTitle.setText("Income Report");
-
-				// Calls PrintIncomereport() from Calculations
-				calc.PrintIncomereport();
-
+				
 				// Switches to the Report Panel 
 				cardLayout.show(cards, "ReportPanel");
 			}	
 		});
 
+		printIncomeButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				reportTitle.setText("Income Report");
+
+				// Calls PrintIncomereport() from Calculations
+				calc.PrintIncomereport();
+			}	
+		});
+
 		filterButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				reportTitle.setText("Income Report By Type " + filterField.getText());
 
-				// Calls PrintIncomereportbyType() from Calculations
-				calc.PrintIncomereportbyTpe();
+				if (reportTitle.getText().equals("Income Report")) {
+
+					reportTitle.setText("Income Report By Type " + filterField.getText());
+
+					// Calls PrintIncomereportbyType() from Calculations
+					calc.PrintIncomereportbyTpe();
+				}
+				else if ( reportTitle.getText().equals("Expense Report"))  {
+					reportTitle.setText("Expense Report By Type " + filterField.getText());
+					
+					// TODO call prints PrintExpensebyType() from calculations
+					calc.PrintExpensebyType();
+				}
 			}
 		});
 
@@ -318,8 +352,18 @@ public class MainGUI extends JFrame{
 		//TODO print expense report Button Action
 		printExpenseButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				// Handle add income action here
-				System.out.println("Print Expense Report button clicked");
+				// Handle add Expense action here
+				reportTitle.setText("Expense Report");
+
+			}
+		});
+
+		//TODO print full report Button Action
+		printFullReportButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				// Handle add Expense action here
+				reportTitle.setText("Full Report - Needs work");
+
 			}
 		});
 	}

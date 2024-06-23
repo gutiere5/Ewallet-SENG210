@@ -39,4 +39,21 @@ public class User {
 	public ArrayList<Wage> getIncome() {
 		return Income;
 	}
+	
+	public double getTotalExpensesAmount() {
+		double totalExpense = 0;
+		
+		for (Expense expense: Spending) {
+			totalExpense += expense.amount;
+		}
+		
+		return totalExpense;
+	}
+	
+	public double getRecentIncome() {
+		Wage recentWage;
+		recentWage =  Income.get(Income.size() - 1);
+		
+		return recentWage.amount;
+	}
 }
