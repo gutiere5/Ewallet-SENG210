@@ -26,7 +26,7 @@ public class MainGUI extends JFrame{
 	JTextField sourceExpenseField = new JTextField();	// Used in mainPanel()
 	JTextField amountExpenseField = new JTextField();	// Used in mainPanel()
 	JTextField yearlyFreqField = new JTextField();		// Used in mainPanel()
-	JTextField exportFileField = new JTextField();		// Used in reportPanel()
+	JTextField exportFileField = new JTextField("C:\\");		// Used in reportPanel()
 	static JTextField filterField = new JTextField();	// Used in reportPanel()
 	
 	// JButtons
@@ -55,6 +55,11 @@ public class MainGUI extends JFrame{
 	JRadioButton expenseTypeRadio = new JRadioButton("Expense By Type");
 	JRadioButton incomeTypeRadio = new JRadioButton("Income By Type");
 	ButtonGroup exportButtonGroup = new ButtonGroup();
+	
+	//show a popup message with the given text
+	public void PopupMessage(String _message) {
+		JOptionPane.showMessageDialog(this, _message);
+	}
 		
 	
 	/**
@@ -72,8 +77,11 @@ public class MainGUI extends JFrame{
 		// Initialized actionPerformed()
 		actionPerformed();
 		
-		//TODO Initializes currency, for currency conversion testing
+		//Initializes currency, for currency conversion testing
 		calc.addCurrency("TestCur", 2);
+		
+		//set calc.gui to this object.
+		calc.gui = this;
 		
 		// Adding Components to Button Group
 		exportButtonGroup.add(expenseRadio);
@@ -434,10 +442,10 @@ public class MainGUI extends JFrame{
 			}
 		});
 		
-		// TODO Export Current File Button Action 
 		exportFileButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				// Handle Export File action here
+				calc.filePath = exportFileField.getText();
 				if(expenseRadio.isSelected()) {
 					calc.kindOfReport = "Expense";
 					calc.exportReport("expense");

@@ -5,7 +5,8 @@ public class Calculations implements Expenser{
 	public User userAtHand;
     public String kindOfReport; // used to determine which type of report is printed by exportReport(). 
     public String reportType; // used to determine which which income or expense entries are used in filtered reports. 
-    public String filePath = "F:\\"; //the filepath where new files are created. 
+    public String filePath; //the filepath where new files are created. 
+    public MainGUI gui;
 
     // Initialize user 
     public Calculations(User user) {
@@ -74,7 +75,7 @@ public class Calculations implements Expenser{
 	
 	//used to display an error message if problems occur during read/write operations. 
 	public void IOError(String error) {
-		System.out.println("IO Error: " + error);
+		gui.PopupMessage("IO Error: " + error);
 	}
 	
 	// As a user I would like to choose a report and export it as an external file (any type is fine preferences are csv or JSON)
