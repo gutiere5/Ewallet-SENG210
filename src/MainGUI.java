@@ -26,6 +26,7 @@ public class MainGUI extends JFrame{
 	JTextField sourceExpenseField = new JTextField();	// Used in mainPanel()
 	JTextField amountExpenseField = new JTextField();	// Used in mainPanel()
 	JTextField yearlyFreqField = new JTextField();		// Used in mainPanel()
+	JTextField exportFileField = new JTextField();		// Used in reportPanel()
 	static JTextField filterField = new JTextField();	// Used in reportPanel()
 	
 	// JButtons
@@ -52,7 +53,7 @@ public class MainGUI extends JFrame{
 	JRadioButton expenseRadio = new JRadioButton("Expense");
 	JRadioButton incomeRadio = new JRadioButton("Income");
 	JRadioButton expenseTypeRadio = new JRadioButton("Expense By Type");
-	JRadioButton incomeTypeRadio = new JRadioButton("Expense By Type");
+	JRadioButton incomeTypeRadio = new JRadioButton("Income By Type");
 	ButtonGroup exportButtonGroup = new ButtonGroup();
 		
 	
@@ -271,11 +272,13 @@ public class MainGUI extends JFrame{
 		eastReportPanel.add(printExpenseButton);
 		eastReportPanel.add(Box.createVerticalStrut(5)); // Add space between components
 		eastReportPanel.add(printFullReportButton);
-		eastReportPanel.add(Box.createVerticalStrut(15)); // Add space between components
+		eastReportPanel.add(Box.createVerticalStrut(10)); // Add space between components
 		eastReportPanel.add(expenseRadio);
 		eastReportPanel.add(incomeRadio);
 		eastReportPanel.add(expenseTypeRadio);
 		eastReportPanel.add(incomeTypeRadio);		
+		eastReportPanel.add(Box.createVerticalStrut(5)); // Add space between components
+		eastReportPanel.add(exportFileField);
 		eastReportPanel.add(Box.createVerticalStrut(5)); // Add space between components
 		eastReportPanel.add(exportFileButton);
 		eastReportPanel.add(Box.createVerticalStrut(5)); // Add space between components

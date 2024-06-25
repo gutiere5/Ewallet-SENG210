@@ -116,12 +116,7 @@ public class Calculations implements Expenser{
 	
 	// updates monthly savings based on latest added income and expenses. This is an internal function not called by the users.  Bonus: what is the most efficient way to call it (when?)? 
 	public void updateMonthlySavings() {
-		
-		
-		userAtHand.monthlysavings = userAtHand.getRecentIncome() - userAtHand.getTotalExpensesAmount();	
-
-		
-		
+		userAtHand.monthlysavings = userAtHand.getRecentIncome() - userAtHand.getTotalExpensesAmount();
 		
 	}
 
