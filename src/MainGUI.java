@@ -34,7 +34,7 @@ public class MainGUI extends JFrame{
 	JButton addExpenseButton = new JButton("Add Expense");						// Used in mainPanel()
 	JButton addIncomeButton = new JButton("Add Income");						// Used in mainPanel()
 	JButton reportWindowButton = new JButton("Reports");						// Used IN mainPanel()
-	JButton covertForeiCurrcyButton = new JButton("Convert Foreign Currency");	// Used in mainPanel()
+	JButton convertForeignCurrencyButton = new JButton("Convert Foreign Currency");	// Used in mainPanel()
 	JButton importIncomeFileButton	= new JButton("Import Income File");			// Used in mainPanel()
 	JButton importExpenseFileButton = new JButton("Import Expense File");				// Used in mainPanel()
 	JButton returnButton = new JButton("Return To Main Menu"); 					// Used in reportPanel()
@@ -195,7 +195,7 @@ public class MainGUI extends JFrame{
 		actionPanel.add(Box.createVerticalStrut(5)); // Add space between label and buttons
 		actionPanel.add(reportWindowButton);
 		actionPanel.add(Box.createVerticalStrut(5)); // Add space between buttons
-		actionPanel.add(covertForeiCurrcyButton);
+		actionPanel.add(convertForeignCurrencyButton);
 		actionPanel.add(Box.createVerticalStrut(5)); // Add space between buttons
 		actionPanel.add(importIncomeFileButton);
 		actionPanel.add(Box.createVerticalStrut(5)); // Add space between buttons
@@ -422,6 +422,13 @@ public class MainGUI extends JFrame{
 			}
 		});
 		
+		convertForeignCurrencyButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				Conversion conv = new Conversion(calc);
+				conv.setVisible(true);
+
+			}
+		});
 		
 		importIncomeFileButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {

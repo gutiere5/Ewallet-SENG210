@@ -35,6 +35,16 @@ public class User {
 		return currencyRates;
 	}
 	
+	public Currency getCurrencyByName(String _name) {
+		Currency returnCur = null;
+		for(Currency cur : currencyRates) {
+			if(cur.name.equals(_name)) {
+				returnCur = cur;
+			}
+		}
+		return returnCur;
+	}
+	
 	public ArrayList<Wage> getIncome() {
 		return Income;
 	}
