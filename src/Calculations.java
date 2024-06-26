@@ -189,6 +189,7 @@ public class Calculations implements Expenser{
 		String rep20 = ("Total Expenses: " + totalExpenses);
 		reportListModel.addElement(rep20);
 	}
+	
 	//As  a user I would like to view a detailed report of all income, and summary information for income
 	public void PrintIncomereport() {
 		String incomeInfo; 		// Used to store Source, amount, Month
@@ -354,6 +355,8 @@ public class Calculations implements Expenser{
 	//	As a user I would like to load multiple expenses from an external file all at once returning true if loaded successfully and false otherwise 
 	public boolean loadIncomeFile(String filePath) {
 		File loadedFile = null;
+		
+		
 		try {
 			loadedFile = new File(filePath);
 		}
@@ -415,16 +418,23 @@ public class Calculations implements Expenser{
 			for(Wage inc : incomes) {
 				userAtHand.addIncomeList(inc);
 			}
+			// Updates Monthly savings
+			updateMonthlySavings();
+			
 			return true;
 		}
 		catch(Exception E){
 			IOError(E.toString());
 			return false;
 		}
+		
+		
 	}
 	//	As a user I would like to load multiple income from an external file all at once returning true if loaded successfully and false otherwise 
 	public boolean loadExpenseFile(String filePath) {
 		File loadedFile = null;
+		
+		
 		try {
 			loadedFile = new File(filePath);
 		}
@@ -493,6 +503,10 @@ public class Calculations implements Expenser{
 			for(Expense exp : expenses) {
 				userAtHand.addExpenseList(exp);
 			}
+			
+			// Update Monthly Savings 
+			updateMonthlySavings();
+			
 			return true;
 		}
 		catch(Exception E){
