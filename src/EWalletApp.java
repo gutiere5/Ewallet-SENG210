@@ -54,7 +54,6 @@ public class EWalletApp extends JFrame{
 	// JLabels
 	JLabel statusLabel = new JLabel();									// Used in loginWindow() and to show who is logged in
 	JLabel reportTitle = new JLabel("Report", SwingConstants.CENTER);	// Used in reportWindow() and actionPerformed()
-	JLabel currencyLabel = new JLabel("Currency: ");					// Used in MainPanel()
 	static JLabel savingsLabel = new JLabel();							// Used in MainPanel()
 	JLabel whenCanIBuyCalculatedLabel = new JLabel("Estimate months needed to save.");	// Used in whenCanIBuy()
 
@@ -215,8 +214,6 @@ public class EWalletApp extends JFrame{
 		actionPanel.add(Box.createVerticalStrut(5)); // Add space between buttons
 		actionPanel.add(whenCanIBuyWindowButton);
 		actionPanel.add(Box.createVerticalStrut(20)); // Add space between buttons
-		actionPanel.add(currencyLabel);
-
 		
 		// Add the sub-panel to the center of the main panel
 		mainPanel.add(centerPanel, BorderLayout.CENTER);
