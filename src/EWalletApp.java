@@ -10,9 +10,6 @@ public class EWalletApp {
 		
 		Calculations calc = new Calculations(new User("TestUser","TestPassword"));
 		
-		//for currency conversion testing
-		calc.addCurrency("TestCur", 2);		
-		
 		//console welcome
 		System.out.println("Welcome to your eWallet!");
 		System.out.println("Menu: ");
@@ -152,7 +149,7 @@ public class EWalletApp {
 		}
 		
 		
-		scnr.close();
+		scnr.close();	
 	}
 
 }

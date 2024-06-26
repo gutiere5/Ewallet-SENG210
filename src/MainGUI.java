@@ -26,28 +26,37 @@ public class MainGUI extends JFrame{
 	JTextField sourceExpenseField = new JTextField();	// Used in mainPanel()
 	JTextField amountExpenseField = new JTextField();	// Used in mainPanel()
 	JTextField yearlyFreqField = new JTextField();		// Used in mainPanel()
-	JTextField exportFileField = new JTextField();		// Used in reportPanel()
+	JTextField exportFileField = new JTextField("C:\\");		// Used in reportPanel()
 	static JTextField filterField = new JTextField();	// Used in reportPanel()
+	JTextField whenBuyItemField = new JTextField(); 	// User in whenCanIBuy()
+	JTextField whenBuyAmountField = new JTextField(); 	// User in whenCanIBuy()
+
 	
 	// JButtons
 	JButton loginButton = new JButton("Login");									// Used in loginWindow()
 	JButton addExpenseButton = new JButton("Add Expense");						// Used in mainPanel()
 	JButton addIncomeButton = new JButton("Add Income");						// Used in mainPanel()
 	JButton reportWindowButton = new JButton("Reports");						// Used IN mainPanel()
-	JButton covertForeiCurrcyButton = new JButton("Convert Foreign Currency");	// Used in mainPanel()
+	JButton convertForeignCurrencyButton = new JButton("Convert Foreign Currency");	// Used in mainPanel()
 	JButton importIncomeFileButton	= new JButton("Import Income File");			// Used in mainPanel()
 	JButton importExpenseFileButton = new JButton("Import Expense File");				// Used in mainPanel()
 	JButton returnButton = new JButton("Return To Main Menu"); 					// Used in reportPanel()
+
 	JButton filterButton = new JButton("Filter");			 					// Used in reportPanel()
 	JButton printIncomeButton = new JButton("Income Report");					// Used in reportPanel()
 	JButton printExpenseButton = new JButton("Expense Report");					// Used in reportPanel()
 	JButton printFullReportButton = new JButton("Print Full Report");			// Used in reportPanel()
 	JButton exportFileButton = new JButton("Export Current Report");			// Used in reportPanel()
+	JButton whenCanIBuyCalculateButton = new JButton("Calculate");				// User in whenCanIBuy()
+	JButton returnWhenButton = new JButton("Return To Main Menu"); 				// Used in whenCanIBuy()
+
 	
 	// JLabels
 	JLabel statusLabel = new JLabel();									// Used in loginWindow() and to show who is logged in
 	JLabel reportTitle = new JLabel("Report", SwingConstants.CENTER);	// Used in reportWindow() and actionPerformed()
 	JLabel currencyLabel = new JLabel("Currency: ");					// Used in MainPanel()
+	static JLabel savingsLabel = new JLabel();							// Used in MainPanel()
+	JLabel whenCanIBuyCalculatedLabel = new JLabel("Estimate months needed to save.");	// Used in whenCanIBuy()
 
 	//JRadioButtons
 	JRadioButton expenseRadio = new JRadioButton("Expense");
@@ -56,8 +65,10 @@ public class MainGUI extends JFrame{
 	JRadioButton incomeTypeRadio = new JRadioButton("Income By Type");
 	ButtonGroup exportButtonGroup = new ButtonGroup();
 	
-	// JList for Reports Information
-	JList<String> reportList = new JList<>(calc.reportListModel);  //Phelix's test placement to update the JList
+	//show a popup message with the given text
+	public void PopupMessage(String _message) {
+		JOptionPane.showMessageDialog(this, _message);
+	}
 		
 	
 	/**
@@ -74,10 +85,14 @@ public class MainGUI extends JFrame{
 
 		// Initialized actionPerformed()
 		actionPerformed();
-		
-		//TODO Initializes currency, for currency conversion testing
+	
+		//Initializes currency, for currency conversion testing
 		calc.addCurrency("TestCur", 2);
 		
+		//set calc.gui to this object.
+		calc.gui = this;
+		
+
 		// Adding Components to Button Group
 		exportButtonGroup.add(expenseRadio);
 		exportButtonGroup.add(incomeRadio);
@@ -89,6 +104,8 @@ public class MainGUI extends JFrame{
 		cards.add(loginWindow(), "LoginPanel");
 		cards.add(mainPanel(), "MainPanel");
 		cards.add(reportWindow(), "ReportPanel");
+		cards.add(whenCanIBuyWindow(), "WhenWindow");
+
 
 		add(cards);
 	}
@@ -190,14 +207,16 @@ public class MainGUI extends JFrame{
 		actionPanel.add(Box.createVerticalStrut(5)); // Add space between label and buttons
 		actionPanel.add(reportWindowButton);
 		actionPanel.add(Box.createVerticalStrut(5)); // Add space between buttons
-		actionPanel.add(covertForeiCurrcyButton);
+		actionPanel.add(convertForeignCurrencyButton);
 		actionPanel.add(Box.createVerticalStrut(5)); // Add space between buttons
 		actionPanel.add(importIncomeFileButton);
 		actionPanel.add(Box.createVerticalStrut(5)); // Add space between buttons
 		actionPanel.add(importExpenseFileButton);
+		actionPanel.add(Box.createVerticalStrut(5)); // Add space between buttons
+		actionPanel.add(whenCanIBuyWindowButton);
 		actionPanel.add(Box.createVerticalStrut(20)); // Add space between buttons
 		actionPanel.add(currencyLabel);
-		actionPanel.add(savingsLabel);
+
 		
 		// Add the sub-panel to the center of the main panel
 		mainPanel.add(centerPanel, BorderLayout.CENTER);
@@ -214,6 +233,10 @@ public class MainGUI extends JFrame{
 		// Panel for user login
 		// Initializes panel for the login view
 		JPanel loginPanel = new JPanel(new GridLayout(3,2));
+		
+		// Initializes sub panel
+		JPanel southLoginPanel = new JPanel(new FlowLayout());
+
 
 		// JLabels 
 		JLabel usernameLabel = new JLabel("Username: ");
@@ -228,10 +251,17 @@ public class MainGUI extends JFrame{
 		loginPanel.add(hintLabel); 
 		loginPanel.add(loginButton);
 
+		// Add Components to southLoginPanel
+		southLoginPanel.add(statusLabel);
+		southLoginPanel.add(Box.createHorizontalStrut(30));
+		southLoginPanel.add(savingsLabel);
+
+
 		// Add Panel to Frame
 		setLayout(new BorderLayout());
 		add(loginPanel, BorderLayout.CENTER);
-		add(statusLabel, BorderLayout.SOUTH);
+		add(southLoginPanel, BorderLayout.SOUTH);
+
 
 		return loginPanel;
 	}
@@ -252,6 +282,8 @@ public class MainGUI extends JFrame{
 		JPanel eastReportPanel = new JPanel();
 		eastReportPanel.setLayout(new BoxLayout(eastReportPanel, BoxLayout.Y_AXIS));
 
+		// JList for Reports Information
+		JList<String> reportList = new JList<>(calc.reportListModel);
 		
 		// JLabels
 		JLabel filterLabel = new JLabel("Filter By Type");
@@ -273,7 +305,7 @@ public class MainGUI extends JFrame{
 		eastReportPanel.add(printExpenseButton);
 		eastReportPanel.add(Box.createVerticalStrut(5)); // Add space between components
 		eastReportPanel.add(printFullReportButton);
-		eastReportPanel.add(Box.createVerticalStrut(10)); // Add space between components
+		eastReportPanel.add(Box.createVerticalStrut(5)); // Add space between components
 		eastReportPanel.add(expenseRadio);
 		eastReportPanel.add(incomeRadio);
 		eastReportPanel.add(expenseTypeRadio);
@@ -289,11 +321,54 @@ public class MainGUI extends JFrame{
 		// Adding components to mainReportPanel
 		mainReportPanel.add(reportTitle, BorderLayout.NORTH);
 		mainReportPanel.add(reportList, BorderLayout.CENTER);
-		mainReportPanel.add(returnButton, BorderLayout.SOUTH);
+		mainReportPanel.add(returnReportButton, BorderLayout.SOUTH);
 		mainReportPanel.add(westReportPanel, BorderLayout.WEST);
 		mainReportPanel.add(eastReportPanel, BorderLayout.EAST);
 
 		return mainReportPanel;
+	}
+	
+	private JPanel whenCanIBuyWindow() {		
+		
+		// Main Panel for whenCanIBuyWindow
+		JPanel mainWhenPanel = new JPanel(new BorderLayout());
+
+		// Sub Panel for mainCenterWhenPanel, using boxLayout
+		JPanel mainCenterWhenPanel = new JPanel();
+		mainCenterWhenPanel.setLayout(new BoxLayout(mainCenterWhenPanel, BoxLayout.Y_AXIS));
+
+		// Sub Panel for mainEastWhenPanel, using boxLayout
+		JPanel mainEastWhenPanel = new JPanel();
+		mainEastWhenPanel.setLayout(new BoxLayout(mainEastWhenPanel, BoxLayout.Y_AXIS));
+
+
+		// JLabels
+		JLabel whenBuyItemLabel = new JLabel("Item:");
+		JLabel whenBuyAmountLabel = new JLabel("Amount");
+		
+		// Adding components to mainCenterWhenPanel
+		mainCenterWhenPanel.add(Box.createVerticalStrut(30)); // Add space between components
+		mainCenterWhenPanel.add(whenBuyItemLabel);
+		mainCenterWhenPanel.add(whenBuyItemField);
+		mainCenterWhenPanel.add(whenBuyAmountLabel);
+		mainCenterWhenPanel.add(whenBuyAmountField);
+		mainCenterWhenPanel.add(Box.createVerticalStrut(30)); // Add space between components
+		mainCenterWhenPanel.add(whenCanIBuyCalculateButton);
+		mainCenterWhenPanel.add(Box.createVerticalStrut(15)); // Add space between components
+
+		
+		// Adding components to mainEastWhenPanel
+		mainEastWhenPanel.add(Box.createVerticalStrut(50)); // Add space between components
+		mainEastWhenPanel.add(whenCanIBuyCalculatedLabel);
+		mainEastWhenPanel.add(Box.createHorizontalStrut(70)); // Add space between components
+
+		
+		// Adding components to mainWhenPanel
+		mainWhenPanel.add(mainEastWhenPanel, BorderLayout.EAST);
+		mainWhenPanel.add(mainCenterWhenPanel, BorderLayout.CENTER);
+		mainWhenPanel.add(returnWhenButton, BorderLayout.SOUTH);
+		
+		return mainWhenPanel;
 	}
 
 	public void actionPerformed() {
@@ -312,6 +387,8 @@ public class MainGUI extends JFrame{
 
 				if (isValidLogin) {
 					statusLabel.setText("Login Successful: "+ inputUsername);
+
+					savingsLabel.setText("Monthly Savings: " + Double.toString(calc.userAtHand.monthlysavings));
 
 					//Switches to Expense Panel
 					cardLayout.show(cards, "MainPanel");
@@ -387,7 +464,17 @@ public class MainGUI extends JFrame{
 			}
 		});
 
-		returnButton.addActionListener(new ActionListener() {
+		returnReportButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				CardLayout cardLayout = (CardLayout)(cards.getLayout());
+
+				// Switches to the Main Panel 
+				cardLayout.show(cards, "MainPanel");
+				setSize(700, 300);
+			}
+		});
+		
+		returnWhenButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				CardLayout cardLayout = (CardLayout)(cards.getLayout());
 
@@ -435,25 +522,69 @@ public class MainGUI extends JFrame{
 				// Handle import File action here
 				
 				importFile.showSaveDialog(null);
+				
+				calc.loadIncomeFile(importFile.getSelectedFile().getAbsolutePath());
 			}
 		});
 		
-		// TODO Expense File Button Action
 		importExpenseFileButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				// Handle expense File action here
 				importFile.showSaveDialog(null);
-
+				
+				calc.loadExpenseFile(importFile.getSelectedFile().getAbsolutePath());
 			}
 		});
 		
-		// TODO Export Current File Button Action 
 		exportFileButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				// Handle Export File action here
-
+				calc.filePath = exportFileField.getText();
+				if(expenseRadio.isSelected()) {
+					calc.kindOfReport = "Expense";
+					calc.exportReport("expense");
+				}
+				else if(expenseTypeRadio.isSelected()) {
+					calc.kindOfReport = "ExpenseByType";
+					calc.reportType = filterField.getText();
+					calc.exportReport("expense_by_type");
+				}
+				else if(incomeRadio.isSelected()) {
+					calc.kindOfReport = "Income";
+					calc.reportType = filterField.getText();
+					calc.exportReport("income");
+				}
+				else if(incomeTypeRadio.isSelected()) {
+					calc.kindOfReport = "IncomeByType";
+					calc.reportType = filterField.getText();
+					calc.exportReport("income_by_type");
+				}
 			}
 		});
+		
+		// Handles when Can I Buy button action here
+		whenCanIBuyWindowButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				CardLayout cardLayout = (CardLayout)(cards.getLayout());
+
+				// Switches to the Main Panel 
+				cardLayout.show(cards, "WhenWindow");		
+			}
+		});
+		
+		// Call whenCanIBuy method froms calculations and returns an INT
+		whenCanIBuyCalculateButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				int months; 		// Stores retuns int value from calc.whenCanIBuy(itemName, amount);
+				String itemName = whenBuyItemField.getText();
+				double amount = Double.parseDouble(whenBuyAmountField.getText());
+				
+				months = calc.whenCanIBuy(itemName, amount);
+				
+				whenCanIBuyCalculatedLabel.setText("You will be able to purchase " + itemName + " in " + months + "month(s).");
+			}
+		});
+		
 	}
 
 	public static void main(String[] args) {

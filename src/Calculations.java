@@ -1,41 +1,32 @@
 
 import java.io.*;
 import java.util.ArrayList;
-
 import javax.swing.DefaultListModel;
-
-
 public class Calculations implements Expenser{
 	public User userAtHand;
-    private double totalIncome; // For testing purposes - Elber 
-    private double totalExpenses; // For testing purposes - Elber 
-    public double totalSavings; // For testing purposes - Elber 
     public String kindOfReport; // used to determine which type of report is printed by exportReport(). 
     public String reportType; // used to determine which which income or expense entries are used in filtered reports. 
     public String filePath; //the filepath where new files are created. 
-	
-	// Elber - created this constructor 
-	public Calculations(User user) {
-		this.userAtHand = user;
-		this.totalSavings = 0.0;
-		
-	}
-	
-	DefaultListModel<String> reportListModel = new DefaultListModel<>();;
-	
+    public MainGUI gui;
+
+    // Initialize user 
+    public Calculations(User user) {
+    	this.userAtHand = user;
+    }
+    
+    // Generates ReportListModel List for JList GUI use 
+ 	DefaultListModel<String> reportListModel = new DefaultListModel<>();;
+    
 	// As a user I'd like to add a monthly expense so I can track and report my expenses - 3pts
 	public void addExpense (Expense Ex) {
 		userAtHand.addExpenseList(Ex);
-		System.out.println("Expense added: Source - " + Ex.source + "; Amount - " + Ex.amount + "; Frequency per year - " + Ex.yearlyfrequency);
 		updateMonthlySavings();		// Updates Monthly Saving when Expense is added
 	}
 	// As a user I'd like to add a monthly income so I can track and report my income all year - 3pts
 	public void addMonthlyIncome (Wage W) {
 		userAtHand.addIncomeList(W);
-		System.out.println("Income added: Source - " + W.source + "; Amount - " + W.amount + "; Month - " + W.Month);
 		updateMonthlySavings();	// Updates Monthly Savings when Monthly Income is added
 	}
-	
 	//As  a user I would like to view a detailed report of all expenses, income, and summary information 
 	//summary information include : total income, total income for each type, total income for each month, total expense, total expense for each type, 
 	//total savings (total income- total expenses) to date, if the total savings are less than zero it should be reported as total new debt. 	
@@ -172,7 +163,6 @@ public class Calculations implements Expenser{
 			reportListModel.addElement(rep10);
 		}
 	}
-	
 	//As  a user I would like to view a detailed report of all expenses, and summary information for expenses 
 	public void PrintExpensereport() {
 		reportListModel.clear();
@@ -195,10 +185,9 @@ public class Calculations implements Expenser{
 		}
 		System.out.println();
 		
-		System.out.println("Total Expenses: " + totalExpenses);
-		System.out.println();
+		String rep20 = ("Total Expenses: " + totalExpenses);
+		remoteListModel.addElement(rep20);
 	}
-	
 	//As  a user I would like to view a detailed report of all income, and summary information for income
 	public void PrintIncomereport() {
 		String incomeInfo; 		// Used to store Source, amount, Month
@@ -214,7 +203,7 @@ public class Calculations implements Expenser{
 	}
 	
 	//As  a user I would like to view a detailed report of income of a certain type, and summary information for income
-	public void PrintIncomereportbyTpe() {
+	public void PrintIncomereportbyTpe(){
 		String incomeInfo; 		// Used to store Source, amount, Month
 		String type; 			// User input from filter text field
 
@@ -228,7 +217,7 @@ public class Calculations implements Expenser{
 				incomeInfo = "Source: " + wage.source + "    Amount: " + wage.amount + "    Month: " + wage.Month;
 				reportListModel .addElement(incomeInfo);
 			}
-		}
+		}		
 	}
 	
 	//As  a user I would like to view a detailed report of expense of a certain type , and summary information for expenses
@@ -273,7 +262,7 @@ public class Calculations implements Expenser{
 	
 	//used to display an error message if problems occur during read/write operations. 
 	public void IOError(String error) {
-		System.out.println("IO Error: " + error);
+		gui.PopupMessage("IO Error: " + error);
 	}
 	
 	// As a user I would like to choose a report and export it as an external file (any type is fine preferences are csv or JSON)
@@ -395,6 +384,7 @@ public class Calculations implements Expenser{
 				
 				if(splitLine.length < 3) {
 					IOError("invalid data on line " + lineNumber + ", 3 data points are required for each line. ");
+					br.close();
 					return false;
 				}
 				
@@ -407,6 +397,7 @@ public class Calculations implements Expenser{
 				}
 				catch(Exception E) {
 					IOError("invalid data on line " + lineNumber + ", second data point must be a number. ");
+					br.close();
 					return false;
 				}
 				
@@ -416,6 +407,8 @@ public class Calculations implements Expenser{
 				//if all three data points work, add a new expense.
 				incomes.add(new Wage(source, amount, month));
 			}
+			
+			br.close();
 			
 			//if no problems occurred while reading the data, add everything from expenses to the userAtHand's Spending list. 
 			for(Wage inc : incomes) {
@@ -462,6 +455,7 @@ public class Calculations implements Expenser{
 				
 				if(splitLine.length < 3) {
 					IOError("invalid data on line " + lineNumber + ", 3 data points are required for each line. ");
+					br.close();
 					return false;
 				}
 				
@@ -474,6 +468,7 @@ public class Calculations implements Expenser{
 				}
 				catch(Exception E) {
 					IOError("invalid data on line " + lineNumber + ", second data point must be a number. ");
+					br.close();
 					return false;
 				}
 				
@@ -483,12 +478,15 @@ public class Calculations implements Expenser{
 				}
 				catch(Exception E) {
 					IOError("invalid data on line " + lineNumber + ", third data point must be an integer. ");
+					br.close();
 					return false;
 				}
 				
 				//if all three data points work, add a new expense.
 				expenses.add(new Expense(source, amount, yearlyFrequency));
 			}
+			
+			br.close();
 			
 			//if no problems occurred while reading the data, add everything from expenses to the userAtHand's Spending list. 
 			for(Expense exp : expenses) {
@@ -503,14 +501,20 @@ public class Calculations implements Expenser{
 	}
 	// As a user I would like to provide an item and a price and get an estimate in number of months needed to save up to buy this item. (based on current monthly saving. 
 	public int whenCanIBuy(String itemname,double  price) {
-		return 0; //temporary line to fix error. 
+
+
+		if (userAtHand.monthlysavings <= 0) {
+			return Integer.MAX_VALUE; // Indicates that saving is not possible with current monthly savings
+		}
+		return (int) Math.ceil(price / userAtHand.monthlysavings);
+
+
 	}
 	
-	// Elber
 	// updates monthly savings based on latest added income and expenses. This is an internal function not called by the users.  Bonus: what is the most efficient way to call it (when?)? 
 	public void updateMonthlySavings() {
 		userAtHand.monthlysavings = userAtHand.getRecentIncome() - userAtHand.getTotalExpensesAmount();
-		
+		MainGUI.savingsLabel.setText("Monthly Savings: " + Double.toString(userAtHand.monthlysavings));
 	}
-		
+
 }
