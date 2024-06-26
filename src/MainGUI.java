@@ -30,13 +30,13 @@ public class MainGUI extends JFrame{
 	static JTextField filterField = new JTextField();	// Used in reportPanel()
 	JTextField whenBuyItemField = new JTextField(); 	// User in whenCanIBuy()
 	JTextField whenBuyAmountField = new JTextField(); 	// User in whenCanIBuy()
+
 	
 	// JButtons
 	JButton loginButton = new JButton("Login");									// Used in loginWindow()
 	JButton addExpenseButton = new JButton("Add Expense");						// Used in mainPanel()
 	JButton addIncomeButton = new JButton("Add Income");						// Used in mainPanel()
 	JButton reportWindowButton = new JButton("Reports");						// Used IN mainPanel()
-
 	JButton convertForeignCurrencyButton = new JButton("Convert Foreign Currency");	// Used in mainPanel()
 	JButton importIncomeFileButton	= new JButton("Import Income File");			// Used in mainPanel()
 	JButton importExpenseFileButton = new JButton("Import Expense File");				// Used in mainPanel()
@@ -57,8 +57,6 @@ public class MainGUI extends JFrame{
 	JLabel currencyLabel = new JLabel("Currency: ");					// Used in MainPanel()
 	static JLabel savingsLabel = new JLabel();							// Used in MainPanel()
 	JLabel whenCanIBuyCalculatedLabel = new JLabel("Estimate months needed to save.");	// Used in whenCanIBuy()
-	
-
 
 	//JRadioButtons
 	JRadioButton expenseRadio = new JRadioButton("Expense");
@@ -87,13 +85,14 @@ public class MainGUI extends JFrame{
 
 		// Initialized actionPerformed()
 		actionPerformed();
-		
+	
 		//Initializes currency, for currency conversion testing
 		calc.addCurrency("TestCur", 2);
 		
 		//set calc.gui to this object.
 		calc.gui = this;
 		
+
 		// Adding Components to Button Group
 		exportButtonGroup.add(expenseRadio);
 		exportButtonGroup.add(incomeRadio);
@@ -106,6 +105,7 @@ public class MainGUI extends JFrame{
 		cards.add(mainPanel(), "MainPanel");
 		cards.add(reportWindow(), "ReportPanel");
 		cards.add(whenCanIBuyWindow(), "WhenWindow");
+
 
 		add(cards);
 	}
@@ -136,6 +136,8 @@ public class MainGUI extends JFrame{
 		actionsLabel.setFont(new Font("Arial", Font.PLAIN, 20));
 		JLabel expensesLabel = new JLabel("Expenses");
 		JLabel incomeLabel = new JLabel("Income");
+		JLabel savingsLabel = new JLabel();
+		savingsLabel.setText("Monthly Savings: " + Double.toString(calc.userAtHand.monthlysavings));
 
 		//////////////
 		// Adding labels and text fields to the mainPanel with GridBagLayout
@@ -214,6 +216,7 @@ public class MainGUI extends JFrame{
 		actionPanel.add(whenCanIBuyWindowButton);
 		actionPanel.add(Box.createVerticalStrut(20)); // Add space between buttons
 		actionPanel.add(currencyLabel);
+
 		
 		// Add the sub-panel to the center of the main panel
 		mainPanel.add(centerPanel, BorderLayout.CENTER);
@@ -234,6 +237,7 @@ public class MainGUI extends JFrame{
 		// Initializes sub panel
 		JPanel southLoginPanel = new JPanel(new FlowLayout());
 
+
 		// JLabels 
 		JLabel usernameLabel = new JLabel("Username: ");
 		JLabel passwordLabel = new JLabel("Password: ");
@@ -246,16 +250,18 @@ public class MainGUI extends JFrame{
 		loginPanel.add(passwordField);
 		loginPanel.add(hintLabel); 
 		loginPanel.add(loginButton);
-		
+
 		// Add Components to southLoginPanel
 		southLoginPanel.add(statusLabel);
 		southLoginPanel.add(Box.createHorizontalStrut(30));
 		southLoginPanel.add(savingsLabel);
 
+
 		// Add Panel to Frame
 		setLayout(new BorderLayout());
 		add(loginPanel, BorderLayout.CENTER);
 		add(southLoginPanel, BorderLayout.SOUTH);
+
 
 		return loginPanel;
 	}
@@ -381,6 +387,7 @@ public class MainGUI extends JFrame{
 
 				if (isValidLogin) {
 					statusLabel.setText("Login Successful: "+ inputUsername);
+
 					savingsLabel.setText("Monthly Savings: " + Double.toString(calc.userAtHand.monthlysavings));
 
 					//Switches to Expense Panel
@@ -482,6 +489,8 @@ public class MainGUI extends JFrame{
 			public void actionPerformed(ActionEvent arg0) {
 				// Handle add Expense action here
 				reportTitle.setText("Expense Report");
+				
+				calc.PrintExpensereport();
 
 			}
 		});
@@ -490,19 +499,24 @@ public class MainGUI extends JFrame{
 		printFullReportButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				// Handle add Expense action here
-				reportTitle.setText("Full Report - Needs work");
+				reportTitle.setText("Full Report");
+				
+				calc.PrintFullreport();
+		
 
 			}
 		});
 		
-		convertForeignCurrencyButton.addActionListener(new ActionListener() {
+		expenseTypeRadio.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				Conversion conv = new Conversion(calc);
-				conv.setVisible(true);
-
+				reportTitle.setText("Expenses by Type");
+				
+				calc.PrintExpensebyType();
 			}
 		});
 		
+		
+		//TODO Import File Button Action
 		importIncomeFileButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				// Handle import File action here
@@ -572,7 +586,6 @@ public class MainGUI extends JFrame{
 		});
 		
 	}
-	
 
 	public static void main(String[] args) {
 		MainGUI GUI = new MainGUI();

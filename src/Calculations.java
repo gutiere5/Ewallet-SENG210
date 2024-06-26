@@ -1,3 +1,4 @@
+
 import java.io.*;
 import java.util.ArrayList;
 import javax.swing.DefaultListModel;
@@ -31,10 +32,161 @@ public class Calculations implements Expenser{
 	//total savings (total income- total expenses) to date, if the total savings are less than zero it should be reported as total new debt. 	
 	public void PrintFullreport() {
 		
+		// Clears Current List information and prints updates
+		reportListModel.clear();
+		
+		double totalExpenses = 0;
+		double totalIncome = 0;
+		ArrayList <String>expenseTypes = new ArrayList<String>();
+		ArrayList <Double>expenseTypeTotals = new ArrayList<Double>();
+		ArrayList <String>incomeTypes = new ArrayList<String>();
+		ArrayList <Double>incomeTypeTotals = new ArrayList<Double>();
+		ArrayList <String>incomeMonth = new ArrayList<String>();
+		ArrayList <Double>incomeMonthTotals = new ArrayList<Double>();
+		
+		System.out.println("Creating full report...");
+		System.out.println();
+		
+		int i;
+		//print expenses
+		String exp = ("Expenses:");
+		reportListModel.addElement(exp);
+		for (i=0; i<userAtHand.getSpending().size(); i++) {
+			System.out.println("Source: " + userAtHand.getSpending().get(i).source + " Amount: " + userAtHand.getSpending().get(i).amount + " Frequency (per year): " + userAtHand.getSpending().get(i).yearlyfrequency);
+			
+			String rep1 = ("Source: " + userAtHand.getSpending().get(i).source + " Amount: " + userAtHand.getSpending().get(i).amount + " Frequency (per year): " + userAtHand.getSpending().get(i).yearlyfrequency);
+			reportListModel.addElement(rep1);
+			
+			//collect total expenses
+			totalExpenses = totalExpenses + ((userAtHand.getSpending().get(i).amount) * (userAtHand.getSpending().get(i).yearlyfrequency));
+			
+			//check if the source is already a recorded type
+			if (expenseTypes.contains(userAtHand.getSpending().get(i).source.toUpperCase())) {
+				//get the index of the type in the type list
+				int index = expenseTypes.indexOf(userAtHand.getSpending().get(i).source.toUpperCase());
+				
+				//add the amount to the totals by types list in the same index spot
+				double newExpenseTotal = expenseTypeTotals.get(index) + ((userAtHand.getSpending().get(i).amount) * (userAtHand.getSpending().get(i).yearlyfrequency));
+				expenseTypeTotals.set(index, newExpenseTotal);
+				
+			}
+			//if the type isn't in the list add the source to the type list and the amount to the total by type list
+			else {
+				expenseTypes.add(userAtHand.getSpending().get(i).source.toUpperCase());
+				expenseTypeTotals.add((userAtHand.getSpending().get(i).amount) * (userAtHand.getSpending().get(i).yearlyfrequency));
+			}
+		}
+		System.out.println();
+		
+		//print income report
+		String inc = ("Income:");
+		reportListModel.addElement(inc);
+		for (i=0; i<userAtHand.getIncome().size(); i++) {
+			System.out.println("Source: " + userAtHand.getIncome().get(i).source + " Amount: " + userAtHand.getIncome().get(i).amount + " Month: " + userAtHand.getIncome().get(i).Month);
+			
+			String rep2 = ("Source: " + userAtHand.getIncome().get(i).source + " Amount: " + userAtHand.getIncome().get(i).amount + " Month: " + userAtHand.getIncome().get(i).Month);
+			reportListModel.addElement(rep2);
+			
+			//collect total income
+			totalIncome = totalIncome + userAtHand.getIncome().get(i).amount;
+			
+			//check if the source is already a recorded type
+			if (incomeTypes.contains(userAtHand.getIncome().get(i).source.toUpperCase())) {
+				//get the index of the type in the type list
+				int index = incomeTypes.indexOf(userAtHand.getIncome().get(i).source.toUpperCase());
+				
+				//add the amount to the totals by types list in the same index spot
+				double newIncomeTotal = incomeTypeTotals.get(index) + userAtHand.getIncome().get(i).amount;
+				incomeTypeTotals.set(index, newIncomeTotal);
+				
+			}
+			//if the type isn't in the list add the source to the type list and the amount to the total by type list
+			else {
+				incomeTypes.add(userAtHand.getIncome().get(i).source.toUpperCase());
+				incomeTypeTotals.add(userAtHand.getIncome().get(i).amount);
+			}
+			
+			//check if the month is already a recorded month
+			if (incomeMonth.contains(userAtHand.getIncome().get(i).Month.toUpperCase())) {
+				//get the index of the type in the type list
+				int index = incomeMonth.indexOf(userAtHand.getIncome().get(i).Month.toUpperCase());
+				
+				//add the amount to the totals by months list in the same index spot
+				double newMonthIncomeTotal = incomeMonthTotals.get(index) + userAtHand.getIncome().get(i).amount;
+				incomeMonthTotals.set(index, newMonthIncomeTotal);
+				
+			}
+			//if the month isn't in the list add the month to the month list and the amount to the total by month list
+			else {
+				incomeMonth.add(userAtHand.getIncome().get(i).Month.toUpperCase());
+				incomeMonthTotals.add(userAtHand.getIncome().get(i).amount);
+			}
+		}
+		System.out.println();
+		
+		//print the summary information
+		String rep3 = ("Summary:");
+		reportListModel.addElement(rep3);
+		String rep4 = ("Total Income: " + totalIncome);
+		reportListModel.addElement(rep4);
+		String lineBreak = "";
+		reportListModel.addElement(lineBreak);
+		
+		for (i=0; i<incomeTypes.size(); i++) {
+			String rep5 = ("Income Type: " + incomeTypes.get(i) + " Total Income: " + incomeTypeTotals.get(i));
+			reportListModel.addElement(rep5);
+		}
+		reportListModel.addElement(lineBreak);
+		
+		for (i=0; i<incomeMonth.size(); i++) {
+			String rep6 = ("Income Month: " + incomeMonth.get(i) + " Total Income: " + incomeMonthTotals.get(i));
+			reportListModel.addElement(rep6);
+		}
+		reportListModel.addElement(lineBreak);
+		
+		String rep7 = ("Total Expenses: " + totalExpenses);
+		reportListModel.addElement(rep7);
+		reportListModel.addElement(lineBreak);
+		
+		for (i=0; i<expenseTypes.size(); i++) {
+			String rep8 = ("Expense Type: " + expenseTypes.get(i) + " Total Expenses: " + expenseTypeTotals.get(i));
+			reportListModel.addElement(rep8);
+		}
+		reportListModel.addElement(lineBreak);
+		
+		if (totalSavings < 0 ) {
+			String rep9 = ("Total Debt: " + (totalIncome - totalExpenses));
+			reportListModel.addElement(rep9);
+		}
+		else {
+			String rep10 = ("Total Savings: " + (totalIncome - totalExpenses));
+			reportListModel.addElement(rep10);
+		}
 	}
 	//As  a user I would like to view a detailed report of all expenses, and summary information for expenses 
 	public void PrintExpensereport() {
+		reportListModel.clear();
+		double totalExpenses = 0;
 		
+		String rep1 = ("Creating Expense report...");
+		reportListModel.addElement(rep1);
+		String lineBreak = "";
+		reportListModel.addElement(lineBreak);
+		
+		int i;
+		//print expenses
+		String rep2 = ("Expenses:");
+		reportListModel.addElement(rep2);
+		for (i=0; i<userAtHand.getSpending().size(); i++) {
+			String rep3 = ("Source: " + userAtHand.getSpending().get(i).source + " Amount: " + userAtHand.getSpending().get(i).amount + " Frequency (per year): " + userAtHand.getSpending().get(i).yearlyfrequency);
+			reportListModel.addElement(rep3);
+			//collect total expenses
+			totalExpenses = totalExpenses + ((userAtHand.getSpending().get(i).amount) * (userAtHand.getSpending().get(i).yearlyfrequency));
+		}
+		System.out.println();
+		
+		String rep20 = ("Total Expenses: " + totalExpenses);
+		remoteListModel.addElement(rep20);
 	}
 	//As  a user I would like to view a detailed report of all income, and summary information for income
 	public void PrintIncomereport() {
@@ -70,7 +222,42 @@ public class Calculations implements Expenser{
 	
 	//As  a user I would like to view a detailed report of expense of a certain type , and summary information for expenses
 	public void PrintExpensebyType() {
+		reportListModel.clear();
+		ArrayList <String>expenseTypes = new ArrayList<String>();
+		ArrayList <Double>expenseTypeTotals = new ArrayList<Double>();
 		
+		String rep1 = ("Creating Expense By Type report...");
+		reportListModel.addElement(rep1);
+		
+		int i;
+		//print expenses
+		String rep2 = ("Expenses By Type:");
+		reportListModel.addElement(rep2);
+		for (i=0; i<userAtHand.getSpending().size(); i++) {		
+			//check if the source is already a recorded type
+			if (expenseTypes.contains(userAtHand.getSpending().get(i).source.toUpperCase())) {
+				//get the index of the type in the type list
+				int index = expenseTypes.indexOf(userAtHand.getSpending().get(i).source.toUpperCase());
+				
+				//add the amount to the totals by types list in the same index spot
+				double newExpenseTotal = expenseTypeTotals.get(index) + ((userAtHand.getSpending().get(i).amount) * (userAtHand.getSpending().get(i).yearlyfrequency));
+				expenseTypeTotals.set(index, newExpenseTotal);
+				
+			}
+			//if the type isn't in the list add the source to the type list and the amount to the total by type list
+			else {
+				expenseTypes.add(userAtHand.getSpending().get(i).source.toUpperCase());
+				expenseTypeTotals.add((userAtHand.getSpending().get(i).amount) * (userAtHand.getSpending().get(i).yearlyfrequency));
+			}
+		}
+		System.out.println();
+		
+		System.out.println("Summary: ");
+		for (i=0; i<expenseTypes.size(); i++) {
+			String rep4 = ("Expense Type: " + expenseTypes.get(i) + " Total Expenses: " + expenseTypeTotals.get(i));
+			reportListModel.addElement(rep4);
+		}
+		System.out.println();
 	}
 	
 	//used to display an error message if problems occur during read/write operations. 
