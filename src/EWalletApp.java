@@ -129,7 +129,7 @@ public class EWalletApp extends JFrame{
 		JLabel amountIncomeLabel = new JLabel("Amount:");
 		JLabel monthLabel = new JLabel("Month:");
 		JLabel sourceExpenseLabel = new JLabel("Source:");
-		JLabel amountExpenseLabel = new JLabel("Amout:");
+		JLabel amountExpenseLabel = new JLabel("Amount:");
 		JLabel yearlyFreqLabel = new JLabel("Yearly Freq:");
 		JLabel actionsLabel = new JLabel("Actions", SwingConstants.CENTER);
 		actionsLabel.setFont(new Font("Arial", Font.PLAIN, 20));
