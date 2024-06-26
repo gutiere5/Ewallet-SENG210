@@ -57,7 +57,7 @@ public class User {
 		double totalExpense = 0;
 		
 		for (Expense expense: Spending) {
-			totalExpense += expense.amount;
+			totalExpense += expense.amount * expense.yearlyfrequency;
 		}
 		
 		return totalExpense;
