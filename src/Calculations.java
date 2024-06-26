@@ -314,13 +314,20 @@ public class Calculations implements Expenser{
 	}
 	// As a user I would like to provide an item and a price and get an estimate in number of months needed to save up to buy this item. (based on current monthly saving. 
 	public int whenCanIBuy(String itemname,double  price) {
-		return 0; //temporary line to fix error. 
+
+
+		if (userAtHand.monthlysavings <= 0) {
+			return Integer.MAX_VALUE; // Indicates that saving is not possible with current monthly savings
+		}
+		return (int) Math.ceil(price / userAtHand.monthlysavings);
+
+
 	}
 	
 	// updates monthly savings based on latest added income and expenses. This is an internal function not called by the users.  Bonus: what is the most efficient way to call it (when?)? 
 	public void updateMonthlySavings() {
 		userAtHand.monthlysavings = userAtHand.getRecentIncome() - userAtHand.getTotalExpensesAmount();
-		
+		MainGUI.savingsLabel.setText("Monthly Savings: " + Double.toString(userAtHand.monthlysavings));
 	}
 
 }
