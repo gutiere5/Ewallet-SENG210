@@ -46,7 +46,7 @@ public class Conversion extends JFrame{
 		currencyLabel.setBounds(10, 80, 200, 20);
 		getContentPane().add(currencyLabel);
 		
-		resultLabel = new JLabel("converted amount:");
+		resultLabel = new JLabel("Converted amount:");
 		resultLabel.setBounds(10, 370, 200, 20);
 		getContentPane().add(resultLabel);
 		

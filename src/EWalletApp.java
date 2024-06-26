@@ -507,6 +507,14 @@ public class EWalletApp extends JFrame{
 			}
 		});
 		
+		convertForeignCurrencyButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				Conversion conv = new Conversion(calc);
+				conv.setVisible(true);
+
+			}
+		});
+		
 		expenseTypeRadio.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				reportTitle.setText("Expenses by Type");
