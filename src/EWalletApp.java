@@ -524,20 +524,21 @@ public class EWalletApp extends JFrame{
 		//TODO Import File Button Action
 		importIncomeFileButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				// Handle import File action here
-				
 				importFile.showSaveDialog(null);
 				
-				calc.loadIncomeFile(importFile.getSelectedFile().getAbsolutePath());
+				if(importFile.getSelectedFile() != null) {
+					calc.loadIncomeFile(importFile.getSelectedFile().getAbsolutePath());
+				}
 			}
 		});
 		
 		importExpenseFileButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				// Handle expense File action here
 				importFile.showSaveDialog(null);
 				
-				calc.loadExpenseFile(importFile.getSelectedFile().getAbsolutePath());
+				if(importFile.getSelectedFile() != null) {
+					calc.loadExpenseFile(importFile.getSelectedFile().getAbsolutePath());
+				}
 			}
 		});
 		
