@@ -35,9 +35,22 @@ public class User {
 		return currencyRates;
 	}
 	
-	// Elber - Added this Method, not sure if professor with adding more methods here
+	public Currency getCurrencyByName(String _name) {
+		Currency returnCur = null;
+		for(Currency cur : currencyRates) {
+			if(cur.name.equals(_name)) {
+				returnCur = cur;
+			}
+		}
+		return returnCur;
+	}
+	
 	public ArrayList<Wage> getIncome() {
 		return Income;
+	}
+	
+	public ArrayList<Expense> getSpending() {
+		return Spending;
 	}
 	
 	public double getTotalExpensesAmount() {

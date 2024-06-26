@@ -26,7 +26,7 @@ public class MainGUI extends JFrame{
 	JTextField sourceExpenseField = new JTextField();	// Used in mainPanel()
 	JTextField amountExpenseField = new JTextField();	// Used in mainPanel()
 	JTextField yearlyFreqField = new JTextField();		// Used in mainPanel()
-	JTextField exportFileField = new JTextField();		// Used in reportPanel()
+	JTextField exportFileField = new JTextField("C:\\");		// Used in reportPanel()
 	static JTextField filterField = new JTextField();	// Used in reportPanel()
 	JTextField whenBuyItemField = new JTextField(); 	// User in whenCanIBuy()
 	JTextField whenBuyAmountField = new JTextField(); 	// User in whenCanIBuy()
@@ -36,11 +36,12 @@ public class MainGUI extends JFrame{
 	JButton addExpenseButton = new JButton("Add Expense");						// Used in mainPanel()
 	JButton addIncomeButton = new JButton("Add Income");						// Used in mainPanel()
 	JButton reportWindowButton = new JButton("Reports");						// Used IN mainPanel()
-	JButton covertForeiCurrcyButton = new JButton("Convert Foreign Currency");	// Used in mainPanel()
-	JButton importIncomeFileButton	= new JButton("Import Income File");		// Used in mainPanel()
-	JButton importExpenseFileButton = new JButton("Import Expense File");		// Used in mainPanel()
-	JButton whenCanIBuyWindowButton = new JButton("When Can I Buy");			// Used in mainPanel()
-	JButton returnReportButton = new JButton("Return To Main Menu"); 			// Used in reportPanel()
+
+	JButton convertForeignCurrencyButton = new JButton("Convert Foreign Currency");	// Used in mainPanel()
+	JButton importIncomeFileButton	= new JButton("Import Income File");			// Used in mainPanel()
+	JButton importExpenseFileButton = new JButton("Import Expense File");				// Used in mainPanel()
+	JButton returnButton = new JButton("Return To Main Menu"); 					// Used in reportPanel()
+
 	JButton filterButton = new JButton("Filter");			 					// Used in reportPanel()
 	JButton printIncomeButton = new JButton("Income Report");					// Used in reportPanel()
 	JButton printExpenseButton = new JButton("Expense Report");					// Used in reportPanel()
@@ -65,6 +66,11 @@ public class MainGUI extends JFrame{
 	JRadioButton expenseTypeRadio = new JRadioButton("Expense By Type");
 	JRadioButton incomeTypeRadio = new JRadioButton("Income By Type");
 	ButtonGroup exportButtonGroup = new ButtonGroup();
+	
+	//show a popup message with the given text
+	public void PopupMessage(String _message) {
+		JOptionPane.showMessageDialog(this, _message);
+	}
 		
 	
 	/**
@@ -82,8 +88,11 @@ public class MainGUI extends JFrame{
 		// Initialized actionPerformed()
 		actionPerformed();
 		
-		//TODO Initializes currency, for currency conversion testing
+		//Initializes currency, for currency conversion testing
 		calc.addCurrency("TestCur", 2);
+		
+		//set calc.gui to this object.
+		calc.gui = this;
 		
 		// Adding Components to Button Group
 		exportButtonGroup.add(expenseRadio);
@@ -196,7 +205,7 @@ public class MainGUI extends JFrame{
 		actionPanel.add(Box.createVerticalStrut(5)); // Add space between label and buttons
 		actionPanel.add(reportWindowButton);
 		actionPanel.add(Box.createVerticalStrut(5)); // Add space between buttons
-		actionPanel.add(covertForeiCurrcyButton);
+		actionPanel.add(convertForeignCurrencyButton);
 		actionPanel.add(Box.createVerticalStrut(5)); // Add space between buttons
 		actionPanel.add(importIncomeFileButton);
 		actionPanel.add(Box.createVerticalStrut(5)); // Add space between buttons
@@ -486,30 +495,56 @@ public class MainGUI extends JFrame{
 			}
 		});
 		
+		convertForeignCurrencyButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				Conversion conv = new Conversion(calc);
+				conv.setVisible(true);
+
+			}
+		});
 		
-		//TODO Import File Button Action
 		importIncomeFileButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				// Handle import File action here
 				
 				importFile.showSaveDialog(null);
+				
+				calc.loadIncomeFile(importFile.getSelectedFile().getAbsolutePath());
 			}
 		});
 		
-		// TODO Expense File Button Action
 		importExpenseFileButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				// Handle expense File action here
 				importFile.showSaveDialog(null);
-
+				
+				calc.loadExpenseFile(importFile.getSelectedFile().getAbsolutePath());
 			}
 		});
 		
-		// TODO Export Current File Button Action 
 		exportFileButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				// Handle Export File action here
-
+				calc.filePath = exportFileField.getText();
+				if(expenseRadio.isSelected()) {
+					calc.kindOfReport = "Expense";
+					calc.exportReport("expense");
+				}
+				else if(expenseTypeRadio.isSelected()) {
+					calc.kindOfReport = "ExpenseByType";
+					calc.reportType = filterField.getText();
+					calc.exportReport("expense_by_type");
+				}
+				else if(incomeRadio.isSelected()) {
+					calc.kindOfReport = "Income";
+					calc.reportType = filterField.getText();
+					calc.exportReport("income");
+				}
+				else if(incomeTypeRadio.isSelected()) {
+					calc.kindOfReport = "IncomeByType";
+					calc.reportType = filterField.getText();
+					calc.exportReport("income_by_type");
+				}
 			}
 		});
 		
