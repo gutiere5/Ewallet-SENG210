@@ -7,7 +7,8 @@ public class Calculations implements Expenser{
     public String kindOfReport; // used to determine which type of report is printed by exportReport(). 
     public String reportType; // used to determine which which income or expense entries are used in filtered reports. 
     public String filePath; //the filepath where new files are created. 
-    public MainGUI gui;
+    public double totalSavings; 
+    public EWalletApp gui;
 
     // Initialize user 
     public Calculations(User user) {
@@ -186,7 +187,7 @@ public class Calculations implements Expenser{
 		System.out.println();
 		
 		String rep20 = ("Total Expenses: " + totalExpenses);
-		remoteListModel.addElement(rep20);
+		reportListModel.addElement(rep20);
 	}
 	//As  a user I would like to view a detailed report of all income, and summary information for income
 	public void PrintIncomereport() {
@@ -209,7 +210,7 @@ public class Calculations implements Expenser{
 
 		reportListModel.clear();
 		
-		type = MainGUI.filterField.getText();
+		type = EWalletApp.filterField.getText();
 		
 		// Gets filtered information for Report Income
 		for (Wage wage: userAtHand.getIncome()) {
@@ -514,7 +515,7 @@ public class Calculations implements Expenser{
 	// updates monthly savings based on latest added income and expenses. This is an internal function not called by the users.  Bonus: what is the most efficient way to call it (when?)? 
 	public void updateMonthlySavings() {
 		userAtHand.monthlysavings = userAtHand.getRecentIncome() - userAtHand.getTotalExpensesAmount();
-		MainGUI.savingsLabel.setText("Monthly Savings: " + Double.toString(userAtHand.monthlysavings));
+		EWalletApp.savingsLabel.setText("Monthly Savings: " + Double.toString(userAtHand.monthlysavings));
 	}
 
 }
