@@ -45,7 +45,7 @@ public class EWalletApp extends JFrame{
 	JButton printIncomeButton = new JButton("Income Report");					// Used in reportPanel()
 	JButton printExpenseButton = new JButton("Expense Report");					// Used in reportPanel()
 	JButton printFullReportButton = new JButton("Print Full Report");			// Used in reportPanel()
-	JButton exportFileButton = new JButton("Export Current Report");			// Used in reportPanel()
+	JButton exportFileButton = new JButton("Export Report");			// Used in reportPanel()
 	JButton whenCanIBuyCalculateButton = new JButton("Calculate");				// User in whenCanIBuy()
 	JButton returnWhenButton = new JButton("Return To Main Menu"); 				// Used in whenCanIBuy()
 	JButton whenCanIBuyWindowButton = new JButton("When Can I Buy");			// Used in whenCanIBuy()
